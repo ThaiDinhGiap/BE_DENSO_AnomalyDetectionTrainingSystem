@@ -1,1 +1,1 @@
-# BE_DENSO_AnomalyDetectionTrainingSystem
+# BACKEND DENSO - Anomaly Detection Training System
