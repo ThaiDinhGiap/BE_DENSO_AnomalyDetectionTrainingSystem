@@ -1,6 +1,10 @@
 package com.denso.anomaly_training_backend.model;
 
 public enum PlanDetailStatus {
-    PLANNED, COMPLETED, SKIPPED
+    PENDING,
+    DONE,
+    SICK_LEAVE,
+    ANNUAL_LEAVE,
+    NOT_APPLICABLE,
+    MISSED
 }
-

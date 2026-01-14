@@ -18,8 +18,6 @@ public class Section {
 
     private String name;
 
-    private String code;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private User manager;

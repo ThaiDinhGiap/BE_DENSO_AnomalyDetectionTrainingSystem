@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "training_plans")
+@Table(name = "training_plan")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,46 +17,50 @@ public class TrainingPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "month_start", nullable = false)
+    private LocalDate monthStart;
+
+    @Column(name = "month_end", nullable = false)
+    private LocalDate monthEnd;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "created_by_tl")
+    private User createdByTl;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by_sv")
-    private User approvedBySv;
+    @JoinColumn(name = "verified_by_sv")
+    private User verifiedBySv;
 
-    @Column(name = "approved_at_sv")
-    private Instant approvedAtSv;
+    @Column(name = "verified_at_sv")
+    private Instant verifiedAtSv;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by_mgr")
-    private User approvedByMgr;
+    @JoinColumn(name = "approved_by_manager")
+    private User approvedByManager;
 
-    @Column(name = "approved_at_mgr")
-    private Instant approvedAtMgr;
+    @Column(name = "approved_at_manager")
+    private Instant approvedAtManager;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private PlanStatus status = PlanStatus.DRAFT;
 
-    @Lob
-    private String note;
+    @Column(name = "current_version")
+    private Integer currentVersion = 1;
 
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
+    @Column(name = "last_reject_reason", columnDefinition = "text")
+    private String lastRejectReason;
 
-    @PrePersist
-    protected void onCreate() { createdAt = Instant.now(); }
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }

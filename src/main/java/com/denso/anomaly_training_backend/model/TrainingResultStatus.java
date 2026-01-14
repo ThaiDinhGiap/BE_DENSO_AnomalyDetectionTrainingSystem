@@ -1,6 +1,14 @@
 package com.denso.anomaly_training_backend.model;
 
 public enum TrainingResultStatus {
-    DRAFT, SUBMITTED, VERIFIED_SV, APPROVED_MGR, REJECTED
+    DRAFT,
+    WAITING_FI,
+    REJECTED_BY_FI,
+    APPROVED_BY_FI,
+    WAITING_SV,
+    REJECTED_BY_SV,
+    APPROVED_BY_SV,
+    WAITING_MANAGER,
+    REJECTED_BY_MANAGER,
+    APPROVED_BY_MANAGER
 }
-
