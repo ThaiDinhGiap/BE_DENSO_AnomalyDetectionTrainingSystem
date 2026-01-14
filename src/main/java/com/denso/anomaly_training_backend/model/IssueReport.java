@@ -14,8 +14,10 @@ public class IssueReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "created_by_tl", nullable = false)
-    private Long createdByTl;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "created_by_tl", nullable = false)
+    private User createdByTl;
 
     @Column(name = "created_at")
     private java.time.Instant createdAt;
