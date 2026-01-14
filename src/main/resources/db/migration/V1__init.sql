@@ -1,6 +1,11 @@
 -- Flyway migration V1: initialize schema for anomaly_training
 -- This migration creates all application tables. It does NOT create the database itself.
 
+
+-- CREATE DATABASE IF NOT EXISTS anomaly_training
+--     CHARACTER SET utf8mb4
+--     COLLATE utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -79,7 +84,6 @@ CREATE TABLE IF NOT EXISTS `employee_skills` (
   `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
   `employee_id` BIGINT NOT NULL,
   `process_id` BIGINT NOT NULL,
-  `certification_date` DATE,
   `is_qualified` BOOLEAN DEFAULT TRUE,
   CONSTRAINT `fk_emsk_employee` FOREIGN KEY (`employee_id`) REFERENCES `employees`(`id`),
   CONSTRAINT `fk_emsk_process` FOREIGN KEY (`process_id`) REFERENCES `processes`(`id`),
@@ -95,7 +99,8 @@ CREATE TABLE IF NOT EXISTS `past_defects` (
   `countermeasure` TEXT,
   `is_escaped` BOOLEAN DEFAULT FALSE,
   `created_by` BIGINT,
-  `status` ENUM('DRAFT','APPROVED','REJECTED') DEFAULT 'DRAFT',
+  `status` ENUM('DRAFT','PENDING_SV','APPROVED_SV','PENDING_MGR','APPROVED','REJECTED') DEFAULT 'DRAFT',
+  `rejection_reason` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `fk_pd_process` FOREIGN KEY (`process_id`) REFERENCES `processes`(`id`),
   CONSTRAINT `fk_pd_creator` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`)
@@ -128,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `training_plans` (
   `approved_by_mgr` BIGINT,
   `approved_at_mgr` TIMESTAMP NULL,
   `status` ENUM('DRAFT','PENDING_SV','PENDING_MGR','APPROVED','REJECTED') DEFAULT 'DRAFT',
+  `rejection_reason` TEXT,
   `note` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `fk_plan_group` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
@@ -166,11 +172,55 @@ CREATE TABLE IF NOT EXISTS `training_results` (
   `approved_by_mgr` BIGINT,
   `approved_at_mgr` TIMESTAMP NULL,
   `status` ENUM('DRAFT','SUBMITTED','VERIFIED_SV','APPROVED_MGR','REJECTED') DEFAULT 'DRAFT',
+  `rejection_reason` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `fk_tr_plandetail` FOREIGN KEY (`plan_detail_id`) REFERENCES `training_plan_details`(`id`),
   CONSTRAINT `fk_tr_process_product` FOREIGN KEY (`group_product_id`) REFERENCES `group_products`(`id`),
   CONSTRAINT `fk_tr_sig_pro` FOREIGN KEY (`signature_pro_id`) REFERENCES `users`(`id`),
   CONSTRAINT `fk_tr_sig_fi` FOREIGN KEY (`signature_fi_id`) REFERENCES `users`(`id`)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `notification_templates` (
+  `code` VARCHAR(50) NOT NULL PRIMARY KEY,
+  `subject_template` VARCHAR(255) NOT NULL,
+  `body_template` TEXT NOT NULL,
+  `description` VARCHAR(255),
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `notification_settings` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `template_code` VARCHAR(50) NOT NULL,
+    `is_enabled` BOOLEAN DEFAULT TRUE,
+    `remind_before_days` INT DEFAULT 0,
+    `is_persistent` BOOLEAN DEFAULT FALSE,
+    `remind_interval_hours` INT DEFAULT 24,
+    `max_reminders` INT DEFAULT 5,
+    `preferred_send_time` TIME DEFAULT '08:00:00',
+    `escalate_after_days` INT DEFAULT 3,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_ns_template` FOREIGN KEY (`template_code`) REFERENCES `notification_templates`(`code`),
+    UNIQUE KEY `unique_setting_template` (`template_code`)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `notification_queue` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `recipient_user_id` BIGINT NOT NULL,
+    `cc_list` TEXT,
+    `notification_type` VARCHAR(50) NOT NULL,
+    `related_entity_id` BIGINT,
+    `related_entity_table` VARCHAR(50),
+    `subject` VARCHAR(255) NOT NULL,
+    `body` TEXT NOT NULL,
+    `status` ENUM('PENDING','SENDING','SENT','FAILED') DEFAULT 'PENDING',
+    `retry_count` INT DEFAULT 0,
+    `max_retries` INT DEFAULT 3,
+    `error_message` TEXT,
+    `scheduled_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `sent_at` TIMESTAMP NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_nq_user` FOREIGN KEY (`recipient_user_id`) REFERENCES `users`(`id`),
+    CONSTRAINT `fk_nq_template` FOREIGN KEY (`notification_type`) REFERENCES `notification_templates`(`code`)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS=1;
