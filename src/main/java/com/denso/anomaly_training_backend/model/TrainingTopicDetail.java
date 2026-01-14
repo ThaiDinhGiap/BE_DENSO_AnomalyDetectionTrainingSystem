@@ -17,8 +17,8 @@ public class TrainingTopicDetail {
     @Column(name = "topic_id", nullable = false)
     private Long topicId;
 
-    @Column(name = "issue_detail_id")
-    private Long issueDetailId;
+    @Column(name = "process_defect_id")
+    private Long processDefectId;
 
     @Column(name = "category_name", nullable = false, length = 200)
     private String categoryName;
