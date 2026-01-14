@@ -1,6 +1,10 @@
 package com.denso.anomaly_training_backend.model;
 
 public enum PlanStatus {
-    DRAFT, PENDING_SV, PENDING_MGR, APPROVED, REJECTED
+    DRAFT,
+    WAITING_SV,
+    REJECTED_BY_SV,
+    WAITING_MANAGER,
+    REJECTED_BY_MANAGER,
+    APPROVED
 }
-

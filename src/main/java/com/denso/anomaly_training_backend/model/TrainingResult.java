@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
-@Table(name = "training_results")
+@Table(name = "training_result")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,45 +16,29 @@ public class TrainingResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plan_detail_id")
-    private TrainingPlanDetail planDetail;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
-    @Column(name = "actual_date", nullable = false)
-    private LocalDate actualDate;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "created_by_tl")
+    private User createdByTl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_product_id")
-    private GroupProduct groupProduct;
-
-    @Column(name = "time_in")
-    private LocalTime timeIn;
-
-    @Column(name = "time_out")
-    private LocalTime timeOut;
-
-    @Column(name = "detection_time")
-    private Integer detectionTime;
-
-    @Column(name = "is_pass", nullable = false)
-    private Boolean isPass;
-
-    @Lob
-    private String remedialAction;
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_pro_id")
-    private User signaturePro;
+    @JoinColumn(name = "confirm_by_fi")
+    private User confirmByFi;
 
-    @Column(name = "signature_pro_at")
-    private Instant signatureProAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_fi_id")
-    private User signatureFi;
-
-    @Column(name = "signature_fi_at")
-    private Instant signatureFiAt;
+    @Column(name = "confirm_at_fi")
+    private Instant confirmAtFi;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "verified_by_sv")
@@ -66,19 +48,22 @@ public class TrainingResult {
     private Instant verifiedAtSv;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by_mgr")
-    private User approvedByMgr;
+    @JoinColumn(name = "approved_by_manager")
+    private User approvedByManager;
 
-    @Column(name = "approved_at_mgr")
-    private Instant approvedAtMgr;
+    @Column(name = "approved_at_manager")
+    private Instant approvedAtManager;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TrainingResultStatus status = TrainingResultStatus.DRAFT;
 
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
+    @Column(name = "current_version")
+    private Integer currentVersion = 1;
 
-    @PrePersist
-    protected void onCreate() { createdAt = Instant.now(); }
+    @Column(name = "last_reject_reason", columnDefinition = "text")
+    private String lastRejectReason;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }

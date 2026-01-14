@@ -22,8 +22,6 @@ public class Group {
 
     private String name;
 
-    private String code;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supervisor_id")
     private User supervisor;

@@ -3,10 +3,11 @@ package com.denso.anomaly_training_backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "training_plan_details")
+@Table(name = "training_plan_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,24 +18,36 @@ public class TrainingPlanDetail {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plan_id")
-    private TrainingPlan plan;
+    @JoinColumn(name = "training_plan_id")
+    private TrainingPlan trainingPlan;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "training_sample_id")
-    private TrainingSample trainingSample;
+    @JoinColumn(name = "process_id")
+    private ProcessEntity process;
 
-    @Column(name = "planned_date")
+    @Column(name = "target_month", nullable = false)
+    private LocalDate targetMonth;
+
+    @Column(name = "planned_date", nullable = false)
     private LocalDate plannedDate;
 
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private PlanDetailStatus status = PlanDetailStatus.PLANNED;
+    @Column(name = "actual_date")
+    private LocalDate actualDate;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String note;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "result_status")
+    private PlanDetailStatus resultStatus = PlanDetailStatus.PENDING;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }
