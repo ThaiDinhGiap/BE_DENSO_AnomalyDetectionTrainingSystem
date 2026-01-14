@@ -2,6 +2,7 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
@@ -10,8 +11,9 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class Group {
+public class Group extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +28,10 @@ public class Group {
     @JoinColumn(name = "supervisor_id")
     private User supervisor;
 
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
-
-    @PrePersist
-    protected void onCreate() { createdAt = Instant.now(); }
+//    @Column(name = "created_at", updatable = false)
+//    private Instant createdAt;
+//
+//    @PrePersist
+//    protected void onCreate() { createdAt = Instant.now(); }
 }
 
