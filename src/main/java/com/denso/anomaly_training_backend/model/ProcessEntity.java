@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProcessEntity {
+public class ProcessEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,9 +37,9 @@ public class ProcessEntity {
     @Column(name = "standard_time_jt")
     private BigDecimal standardTimeJt;
 
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
-
-    @PrePersist
-    protected void onCreate() { createdAt = Instant.now(); }
+//    @Column(name = "created_at", updatable = false)
+//    private Instant createdAt;
+//
+//    @PrePersist
+//    protected void onCreate() { createdAt = Instant.now(); }
 }

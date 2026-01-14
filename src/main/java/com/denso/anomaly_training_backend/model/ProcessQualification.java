@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProcessQualification {
+public class ProcessQualification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,10 +33,10 @@ public class ProcessQualification {
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
+//    @Column(name = "created_at")
+//    private java.time.Instant createdAt;
+//
+//    @Column(name = "updated_at")
+//    private java.time.Instant updatedAt;
 }
 

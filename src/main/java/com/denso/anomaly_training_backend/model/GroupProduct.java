@@ -13,7 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GroupProduct {
+public class GroupProduct extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,9 +25,9 @@ public class GroupProduct {
     @Column(name = "product_code", nullable = false)
     private String productCode;
 
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
-
-    @PrePersist
-    protected void onCreate() { createdAt = Instant.now(); }
+//    @Column(name = "created_at", updatable = false)
+//    private Instant createdAt;
+//
+//    @PrePersist
+//    protected void onCreate() { createdAt = Instant.now(); }
 }
