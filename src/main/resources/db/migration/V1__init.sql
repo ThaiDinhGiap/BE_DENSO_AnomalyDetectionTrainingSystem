@@ -302,7 +302,6 @@ CREATE TABLE process_qualifications (
 -- ============================================
 CREATE TABLE issue_report (
                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                              created_by_tl BIGINT NOT NULL,
                               verified_by_sv BIGINT,
                               verified_at_sv TIMESTAMP NULL,
                               approved_by_manager BIGINT,
@@ -321,12 +320,10 @@ CREATE TABLE issue_report (
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                               updated_by NVARCHAR(255),
 
-                              FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
                               FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                               FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                               FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE RESTRICT,
                               INDEX idx_status (status),
-                              INDEX idx_created_by (created_by_tl),
                               INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -442,7 +439,6 @@ CREATE TABLE training_topics (
                                  id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                  version INT DEFAULT 1,
                                  title VARCHAR(200) NOT NULL,
-                                 created_by_tl BIGINT NOT NULL,
                                  verified_by_sv BIGINT,
                                  verified_at_sv TIMESTAMP NULL,
                                  approved_by_manager BIGINT,
@@ -458,11 +454,9 @@ CREATE TABLE training_topics (
                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                  updated_by NVARCHAR(255),
 
-                                 FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                                  INDEX idx_status (status),
-                                 INDEX idx_created_by (created_by_tl),
                                  INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -473,7 +467,6 @@ CREATE TABLE training_topics_history (
                                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                          training_topic_id BIGINT NOT NULL,
                                          version INT NOT NULL,
-                                         created_by_tl BIGINT,
                                          verified_by_sv BIGINT,
                                          verified_at_sv TIMESTAMP NULL,
                                          approved_by_manager BIGINT,
@@ -576,7 +569,6 @@ CREATE TABLE training_plan (
                                month_start DATE NOT NULL,
                                month_end DATE NOT NULL,
                                group_id BIGINT NOT NULL,
-                               created_by_tl BIGINT NOT NULL,
                                verified_by_sv BIGINT,
                                verified_at_sv TIMESTAMP NULL,
                                approved_by_manager BIGINT,
@@ -593,13 +585,11 @@ CREATE TABLE training_plan (
                                updated_by NVARCHAR(255),
 
                                FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
-                               FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
                                FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                                FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                                INDEX idx_status (status),
                                INDEX idx_group (group_id),
                                INDEX idx_month_range (month_start, month_end),
-                               INDEX idx_created_by (created_by_tl),
                                INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -614,7 +604,6 @@ CREATE TABLE training_plan_history (
                                        month_start DATE,
                                        month_end DATE,
                                        group_id BIGINT,
-                                       created_by_tl BIGINT,
                                        verified_by_sv BIGINT,
                                        rejected_by BIGINT,
                                        reject_level ENUM('SUPERVISOR', 'MANAGER'),

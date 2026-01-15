@@ -34,10 +34,6 @@ public class TrainingPlan extends BaseEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl")
-    private User createdByTl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "verified_by_sv")
     private User verifiedBySv;

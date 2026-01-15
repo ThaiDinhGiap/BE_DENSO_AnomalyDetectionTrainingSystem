@@ -23,9 +23,6 @@ public class TrainingTopicHistory extends BaseEntity {
     @Column(name = "version", nullable = false)
     private Integer version;
 
-    @Column(name = "created_by_tl")
-    private Long createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 

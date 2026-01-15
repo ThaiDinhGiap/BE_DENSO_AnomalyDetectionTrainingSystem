@@ -35,9 +35,6 @@ public class TrainingPlanHistory extends BaseEntity {
     @Column(name = "group_id")
     private Long groupId;
 
-    @Column(name = "created_by_tl")
-    private Long createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 

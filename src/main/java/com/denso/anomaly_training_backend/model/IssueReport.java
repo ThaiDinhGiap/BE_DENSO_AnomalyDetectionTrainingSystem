@@ -17,10 +17,6 @@ public class IssueReport extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl", nullable = false)
-    private User createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 

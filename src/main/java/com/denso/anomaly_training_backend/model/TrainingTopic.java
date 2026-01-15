@@ -22,9 +22,6 @@ public class TrainingTopic extends BaseEntity {
     @Column(length = 200, nullable = false)
     private String title;
 
-    @Column(name = "created_by_tl", nullable = false)
-    private Long createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 
