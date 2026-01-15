@@ -2,25 +2,24 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "issue_report")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class IssueReport {
+public class IssueReport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by_tl", nullable = false)
     private User createdByTl;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
 
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
@@ -35,7 +34,7 @@ public class IssueReport {
     private java.time.Instant approvedAtManager;
 
     @Column(name = "status")
-    private String status;
+    private String status = "DRAFT";
 
     @Column(name = "rejected_by")
     private Long rejectedBy;
@@ -47,11 +46,8 @@ public class IssueReport {
     private String rejectReason;
 
     @Column(name = "current_version")
-    private Integer currentVersion;
+    private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }

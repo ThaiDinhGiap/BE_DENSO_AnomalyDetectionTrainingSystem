@@ -1,8 +1,6 @@
 package com.denso.anomaly_training_backend.dto.request;
 
-import com.denso.anomaly_training_backend.model.EmployeeStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.denso.anomaly_training_backend.enums.EmployeeStatus;
 import lombok.Data;
 
 @Data

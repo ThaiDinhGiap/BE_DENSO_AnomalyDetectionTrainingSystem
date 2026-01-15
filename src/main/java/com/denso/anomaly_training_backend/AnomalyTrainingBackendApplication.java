@@ -1,10 +1,11 @@
 package com.denso.anomaly_training_backend;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.amqp.autoconfigure.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = { RabbitAutoConfiguration.class })
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
 public class AnomalyTrainingBackendApplication {
 

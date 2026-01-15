@@ -1,4 +1,4 @@
-package com.denso.anomaly_training_backend.model;
+package com.denso.anomaly_training_backend.enums;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

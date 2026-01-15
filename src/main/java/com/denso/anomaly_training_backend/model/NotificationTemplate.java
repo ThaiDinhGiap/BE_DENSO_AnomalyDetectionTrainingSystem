@@ -2,14 +2,17 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "notification_templates")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class NotificationTemplate {
+public class NotificationTemplate extends BaseEntity {
     @Id
     @Column(length = 50)
     private String code;
@@ -22,7 +25,4 @@ public class NotificationTemplate {
 
     @Column(length = 500)
     private String description;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }

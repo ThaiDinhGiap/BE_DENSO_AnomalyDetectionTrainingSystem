@@ -2,28 +2,33 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "process_defects")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ProcessDefect {
+public class ProcessDefect extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "issue_detail_id", nullable = false)
-    private Long issueDetailId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "issue_detail_id")
+    private IssueDetail issueDetail;
 
     @Column(name = "defect_description", nullable = false, columnDefinition = "text")
     private String defectDescription;
 
-    @Column(name = "process_id", nullable = false)
-    private Long processId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "process_id")
+    private Process process;
 
     @Column(name = "detected_date", nullable = false)
     private LocalDate detectedDate;
@@ -33,10 +38,4 @@ public class ProcessDefect {
 
     @Column(columnDefinition = "text")
     private String note;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }

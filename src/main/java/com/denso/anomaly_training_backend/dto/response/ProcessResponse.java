@@ -1,9 +1,8 @@
 package com.denso.anomaly_training_backend.dto.response;
 
-import com.denso.anomaly_training_backend.model.ProcessClassification;
+import com.denso.anomaly_training_backend.enums.ProcessClassification;
 import lombok.Data;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data

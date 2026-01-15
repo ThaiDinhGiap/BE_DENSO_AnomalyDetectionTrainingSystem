@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.dto.request;
 
-import com.denso.anomaly_training_backend.model.Role;
+import com.denso.anomaly_training_backend.enums.Role;
 import lombok.Data;
 
 

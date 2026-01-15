@@ -2,14 +2,17 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "notification_queue")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class NotificationQueue {
+public class NotificationQueue extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +20,7 @@ public class NotificationQueue {
     @Column(name = "recipient_user_id", nullable = false)
     private Long recipientUserId;
 
-    @Column(name = "cc_list")
+    @Column(name = "cc_list", columnDefinition = "text")
     private String ccList;
 
     @Column(name = "notification_type", length = 50, nullable = false)
@@ -36,13 +39,13 @@ public class NotificationQueue {
     private String body;
 
     @Column(name = "status")
-    private String status;
+    private String status = "PENDING";
 
     @Column(name = "retry_count")
-    private Integer retryCount;
+    private Integer retryCount = 0;
 
     @Column(name = "max_retries")
-    private Integer maxRetries;
+    private Integer maxRetries = 3;
 
     @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
@@ -52,8 +55,5 @@ public class NotificationQueue {
 
     @Column(name = "sent_at")
     private java.time.Instant sentAt;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
 }
 

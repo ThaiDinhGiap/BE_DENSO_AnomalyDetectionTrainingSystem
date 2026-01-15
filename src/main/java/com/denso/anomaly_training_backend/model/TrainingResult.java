@@ -1,17 +1,21 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingResultStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "training_result")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingResult {
+public class TrainingResult extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,13 +29,6 @@ public class TrainingResult {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id")
     private Group group;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl")
-    private User createdByTl;
-
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "confirm_by_fi")
@@ -63,7 +60,4 @@ public class TrainingResult {
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
 }

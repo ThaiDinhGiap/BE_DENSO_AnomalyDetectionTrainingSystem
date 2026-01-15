@@ -1,8 +1,8 @@
 package com.denso.anomaly_training_backend.dto.response;
 
-import com.denso.anomaly_training_backend.model.EmployeeStatus;
+import com.denso.anomaly_training_backend.enums.EmployeeStatus;
 import lombok.Data;
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 
 @Data

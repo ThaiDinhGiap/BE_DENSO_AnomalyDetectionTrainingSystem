@@ -2,20 +2,24 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "notification_settings")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class NotificationSetting {
+public class NotificationSetting extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "template_code", length = 50, nullable = false)
-    private String templateCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template_code")
+    private NotificationTemplate notificationTemplate;
 
     @Column(name = "is_enabled")
     private Boolean isEnabled = true;
@@ -37,8 +41,5 @@ public class NotificationSetting {
 
     @Column(name = "escalate_after_days")
     private Integer escalateAfterDays;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }
 
