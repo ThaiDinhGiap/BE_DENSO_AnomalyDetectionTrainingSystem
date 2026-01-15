@@ -2,37 +2,37 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "defect_training_content")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class DefectTrainingContent {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class DefectTrainingContent extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(name = "training_topic_detail_id", nullable = false)
-    private Long trainingTopicDetailId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_topic_detail_id", nullable = false)
+    TrainingTopicDetail trainingTopicDetail;
 
-    @Column(name = "process_defect_id", nullable = false)
-    private Long processDefectId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "process_defect_id", nullable = false)
+    ProcessDefect processDefect;
 
     @Column(name = "category_name", nullable = false, length = 200)
-    private String categoryName;
+    String categoryName;
 
     @Column(name = "training_sample")
-    private String trainingSample;
+    String trainingSample;
 
     @Column(name = "training_detail", nullable = false)
-    private String trainingDetail;
+    String trainingDetail;
 
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
 
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }
 

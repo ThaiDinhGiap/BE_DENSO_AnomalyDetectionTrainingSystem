@@ -2,6 +2,7 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
@@ -10,34 +11,34 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class IssueDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "issue_report_id", nullable = false)
-    private Long issueReportId;
+    Long issueReportId;
 
     @Column(name = "defect_description", nullable = false)
-    private String defectDescription;
+    String defectDescription;
 
     @Column(name = "process_id", nullable = false)
-    private Long processId;
+    Long processId;
 
     @Column(name = "detected_date", nullable = false)
-    private LocalDate detectedDate;
+    LocalDate detectedDate;
 
     @Column(name = "is_escaped")
-    private Boolean isEscaped = false;
+    Boolean isEscaped = false;
 
     @Column(name = "note")
-    private String note;
+    String note;
 
     @Column(name = "created_at")
-    private java.time.Instant createdAt;
+    java.time.Instant createdAt;
 
     @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
+    java.time.Instant updatedAt;
 }
 

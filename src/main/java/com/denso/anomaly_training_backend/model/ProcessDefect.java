@@ -2,41 +2,49 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "process_defects")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProcessDefect {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(name = "issue_detail_id", nullable = false)
-    private Long issueDetailId;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "issue_detail_id",
+            nullable = false,
+            unique = true
+    )
+    IssueDetail issueDetailId;
 
     @Column(name = "defect_description", nullable = false, columnDefinition = "text")
-    private String defectDescription;
+    String defectDescription;
 
-    @Column(name = "process_id", nullable = false)
-    private Long processId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "process_id", nullable = false)
+    ProcessEntity process;
 
     @Column(name = "detected_date", nullable = false)
-    private LocalDate detectedDate;
+    LocalDate detectedDate;
 
     @Column(name = "is_escaped")
-    private Boolean isEscaped = false;
+    Boolean isEscaped = false;
 
     @Column(columnDefinition = "text")
-    private String note;
+    String note;
 
     @Column(name = "created_at")
-    private java.time.Instant createdAt;
+    LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
+    LocalDateTime updatedAt;
 }

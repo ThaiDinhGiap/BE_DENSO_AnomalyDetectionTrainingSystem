@@ -2,56 +2,55 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "issue_report")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class IssueReport {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class IssueReport extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
+    Long id;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by_tl", nullable = false)
-    private User createdByTl;
+    User createdByTl;
 
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
-
-    @Column(name = "verified_by_sv")
-    private Long verifiedBySv;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "verified_by_sv")
+    User verifiedBySv;
 
     @Column(name = "verified_at_sv")
-    private java.time.Instant verifiedAtSv;
+    LocalDateTime verifiedAtSv;
 
-    @Column(name = "approved_by_manager")
-    private Long approvedByManager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by_manager")
+    User approvedByManager;
 
     @Column(name = "approved_at_manager")
-    private java.time.Instant approvedAtManager;
+    LocalDateTime approvedAtManager;
 
     @Column(name = "status")
-    private String status;
+    String status;
 
     @Column(name = "rejected_by")
-    private Long rejectedBy;
+    Long rejectedBy;
 
     @Column(name = "reject_level")
-    private String rejectLevel;
+    String rejectLevel;
 
     @Column(name = "reject_reason", columnDefinition = "text")
-    private String rejectReason;
+    String rejectReason;
 
     @Column(name = "current_version")
-    private Integer currentVersion;
+    Integer currentVersion;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
-    private String lastRejectReason;
+    String lastRejectReason;
 
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }
