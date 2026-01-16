@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.RejectLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -41,8 +42,9 @@ public class TrainingPlanHistory extends BaseEntity {
     @Column(name = "rejected_by")
     private Long rejectedBy;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
-    private String rejectLevel;
+    private RejectLevel rejectLevel;
 
     @Column(name = "reject_reason", columnDefinition = "text")
     private String rejectReason;

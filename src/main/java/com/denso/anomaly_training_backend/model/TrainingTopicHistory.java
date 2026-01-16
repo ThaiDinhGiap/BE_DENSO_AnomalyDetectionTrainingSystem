@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingTopicStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,8 +36,9 @@ public class TrainingTopicHistory extends BaseEntity {
     @Column(name = "approved_at_manager")
     private java.time.Instant approvedAtManager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TrainingTopicStatus status;
 
     @Column(name = "recorded_at")
     private java.time.Instant recordedAt;

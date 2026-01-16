@@ -1,6 +1,7 @@
 package com.denso.anomaly_training_backend.model;
 
-import com.denso.anomaly_training_backend.enums.Role;
+import com.denso.anomaly_training_backend.enums.OAuthProvider;
+import com.denso.anomaly_training_backend.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,25 +17,33 @@ import lombok.experimental.FieldDefaults;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false, length = 50, unique = true)
-    private String username;
+    String username;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash;
+    @Column(name = "password_hash", length = 255)
+    String passwordHash;
 
     @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
+    String fullName;
 
     @Column(nullable = false, length = 100, unique = true)
-    private String email;
+    String email;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role;
+    UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_provider", length = 20)
+    @Builder.Default
+    OAuthProvider oauthProvider = OAuthProvider.LOCAL;
+
+    @Column(name = "oauth_provider_id", length = 255)
+    String oauthProviderId;
 
     @Column(name = "is_active")
     @Builder.Default
-    private Boolean isActive = true;
+    Boolean isActive = true;
 }

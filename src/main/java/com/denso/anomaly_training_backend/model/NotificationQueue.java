@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.NotificationQueueStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -38,8 +39,9 @@ public class NotificationQueue extends BaseEntity {
     @Column(name = "body", columnDefinition = "TEXT", nullable = false)
     private String body;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status = "PENDING";
+    private NotificationQueueStatus status = NotificationQueueStatus.PENDING;
 
     @Column(name = "retry_count")
     private Integer retryCount = 0;

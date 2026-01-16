@@ -1,6 +1,7 @@
 package com.denso.anomaly_training_backend.messaging.consumer;
 
 import com.denso.anomaly_training_backend.dto.notification.EmailNotificationMessage;
+import com.denso.anomaly_training_backend.enums.NotificationQueueStatus;
 import com.denso.anomaly_training_backend.messaging.config.RabbitMQConfig;
 import com.denso.anomaly_training_backend.model.NotificationQueue;
 import com.denso.anomaly_training_backend.model.NotificationTemplate;
@@ -63,7 +64,7 @@ public class EmailNotificationConsumer {
             sendEmail(message.getRecipientEmail(), subject, body);
 
             // 4. Lưu history
-            saveHistory(message, "SENT", null);
+            saveHistory(message, NotificationQueueStatus.SENT, null);
 
             log.info("Email sent successfully - CorrelationId: {}", correlationId);
 
@@ -112,7 +113,7 @@ public class EmailNotificationConsumer {
 
         } else {
             // Max retries reached, sẽ tự động vào Dead Letter Queue
-            saveHistory(message, "FAILED", error.getMessage());
+            saveHistory(message, NotificationQueueStatus.FAILED, error.getMessage());
 
             log.error("Email permanently failed after {} retries - CorrelationId: {}",
                     MAX_RETRY_COUNT, message.getCorrelationId());
@@ -131,7 +132,7 @@ public class EmailNotificationConsumer {
         saveToFailedEmailsTable(message);
     }
 
-    private void saveHistory(EmailNotificationMessage message, String status, String error) {
+    private void saveHistory(EmailNotificationMessage message, NotificationQueueStatus status, String error) {
         NotificationQueue history = new NotificationQueue();
         history.setRecipientUserId(message.getRecipientUserId());
         history.setNotificationType(message.getTemplateCode());

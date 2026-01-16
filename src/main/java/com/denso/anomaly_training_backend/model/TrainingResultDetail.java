@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingResultDetailStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -65,8 +66,9 @@ public class TrainingResultDetail extends BaseEntity {
     @Column(name = "sv_confirmation")
     private Long svConfirmation;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status = "DRAFT";
+    private TrainingResultDetailStatus status = TrainingResultDetailStatus.DRAFT;
 
     @Column(name = "current_version")
     private Integer currentVersion = 1;
