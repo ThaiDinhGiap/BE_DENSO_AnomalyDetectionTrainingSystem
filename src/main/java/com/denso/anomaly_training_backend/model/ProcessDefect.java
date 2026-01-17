@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "process_defects")
@@ -18,15 +17,19 @@ public class ProcessDefect extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "issue_detail_id", unique = true)
-    IssueDetail issueDetailId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "issue_detail_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    IssueDetail issueDetail;
 
     @Column(name = "defect_description", nullable = false, columnDefinition = "text")
     String defectDescription;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     Process process;
 
     @Column(name = "detected_date", nullable = false)

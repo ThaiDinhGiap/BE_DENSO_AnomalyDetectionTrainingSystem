@@ -1,9 +1,27 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.NotificationQueueStatus;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "notification_queue")
@@ -14,48 +32,57 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class NotificationQueue extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(name = "recipient_user_id", nullable = false)
-    private Long recipientUserId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "recipient_user_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    User recipientUser;
 
-    @Column(name = "cc_list", columnDefinition = "text")
-    private String ccList;
+    @Column(name = "cc_list", columnDefinition = "TEXT")
+    String ccList;
 
-    @Column(name = "notification_type", length = 50, nullable = false)
-    private String notificationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "notification_type", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    NotificationTemplate notificationTemplate;
 
     @Column(name = "related_entity_id")
-    private Long relatedEntityId;
+    Long relatedEntityId;
 
     @Column(name = "related_entity_table", length = 50)
-    private String relatedEntityTable;
+    String relatedEntityTable;
 
-    @Column(name = "subject", length = 255, nullable = false)
-    private String subject;
+    @Column(nullable = false)
+    String subject;
 
-    @Column(name = "body", columnDefinition = "TEXT", nullable = false)
-    private String body;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    String body;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private NotificationQueueStatus status = NotificationQueueStatus.PENDING;
+    @Column(nullable = false)
+    @Builder.Default
+    NotificationQueueStatus status = NotificationQueueStatus.PENDING;
 
     @Column(name = "retry_count")
-    private Integer retryCount = 0;
+    @Builder.Default
+    Integer retryCount = 0;
 
     @Column(name = "max_retries")
-    private Integer maxRetries = 3;
+    @Builder.Default
+    Integer maxRetries = 3;
 
     @Column(name = "error_message", columnDefinition = "TEXT")
-    private String errorMessage;
+    String errorMessage;
 
     @Column(name = "scheduled_at")
-    private java.time.Instant scheduledAt;
+    Instant scheduledAt;
 
     @Column(name = "sent_at")
-    private java.time.Instant sentAt;
+    Instant sentAt;
 }
-

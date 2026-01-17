@@ -1,7 +1,15 @@
 package com.denso.anomaly_training_backend.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -13,16 +21,17 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class NotificationTemplate extends BaseEntity {
+
     @Id
     @Column(length = 50)
-    private String code;
+    String code;
 
     @Column(name = "subject_template", nullable = false, length = 200)
-    private String subjectTemplate;
+    String subjectTemplate;
 
-    @Column(name = "body_template", nullable = false, columnDefinition = "text")
-    private String bodyTemplate;
+    @Column(name = "body_template", nullable = false, columnDefinition = "TEXT")
+    String bodyTemplate;
 
     @Column(length = 500)
-    private String description;
+    String description;
 }

@@ -19,32 +19,35 @@ public class IssueReport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl", nullable = false)
-    User createdByTl;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "verified_by_sv")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     User verifiedBySv;
 
     @Column(name = "verified_at_sv")
-    LocalDateTime verifiedAtSv;
+    Instant verifiedAtSv;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by_manager")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     User approvedByManager;
 
     @Column(name = "approved_at_manager")
-    LocalDateTime approvedAtManager;
+    Instant approvedAtManager;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     IssueReportStatus status = IssueReportStatus.DRAFT;
 
-    @Column(name = "rejected_by")
-    Long rejectedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rejected_by")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    User rejectedBy;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
@@ -54,6 +57,7 @@ public class IssueReport extends BaseEntity {
     String rejectReason;
 
     @Column(name = "current_version")
+    @Builder.Default
     Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")

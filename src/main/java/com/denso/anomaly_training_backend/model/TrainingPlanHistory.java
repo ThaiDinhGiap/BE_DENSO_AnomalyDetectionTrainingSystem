@@ -1,9 +1,28 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.RejectLevel;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "training_plan_history")
@@ -18,8 +37,11 @@ public class TrainingPlanHistory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "training_plan_id", nullable = false)
-    private Long trainingPlanId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_plan_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingPlan trainingPlan;
 
     @Column(name = "title")
     private String title;
@@ -28,19 +50,28 @@ public class TrainingPlanHistory extends BaseEntity {
     private Integer version;
 
     @Column(name = "month_start")
-    private java.time.LocalDate monthStart;
+    private LocalDate monthStart;
 
     @Column(name = "month_end")
-    private java.time.LocalDate monthEnd;
+    private LocalDate monthEnd;
 
-    @Column(name = "group_id")
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Group group;
 
-    @Column(name = "verified_by_sv")
-    private Long verifiedBySv;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "verified_by_sv")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User verifiedBySv;
 
-    @Column(name = "rejected_by")
-    private Long rejectedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rejected_by")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User rejectedBy;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
@@ -50,5 +81,5 @@ public class TrainingPlanHistory extends BaseEntity {
     private String rejectReason;
 
     @Column(name = "recorded_at")
-    private java.time.Instant recordedAt;
+    private Instant recordedAt;
 }

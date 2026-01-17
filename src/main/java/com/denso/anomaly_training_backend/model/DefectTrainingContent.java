@@ -11,18 +11,22 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DefectTrainingContent extends BaseEntity{
+public class DefectTrainingContent extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "training_topic_detail_id", nullable = false)
-    TrainingTopicDetail trainingTopicDetail;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingTopicDetail trainingTopicDetail;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_defect_id", nullable = false)
-    ProcessDefect processDefect;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private ProcessDefect processDefect;
 
     @Column(name = "category_name", nullable = false, length = 200)
     String categoryName;
@@ -32,7 +36,5 @@ public class DefectTrainingContent extends BaseEntity{
 
     @Column(name = "training_detail", columnDefinition = "text", nullable = false)
    String trainingDetail;
-
-
 }
 

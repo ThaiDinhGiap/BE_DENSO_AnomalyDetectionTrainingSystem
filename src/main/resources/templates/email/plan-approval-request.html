@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #0066cc;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>DENSO Anomaly Training System</h1>
+    </div>
+
+    <div class="content">
+        <h2>Kế hoạch huấn luyện cần phê duyệt</h2>
+
+        <p>Kính gửi <strong th:text="${recipientName}">Supervisor Name</strong>,</p>
+
+        <p>Bạn có một kế hoạch huấn luyện mới cần phê duyệt: </p>
+
+        <table>
+            <tr>
+                <th>Tên kế hoạch:</th>
+                <td th: text="${planTitle}">Plan Title</td>
+            </tr>
+            <tr>
+                <th>Dây chuyền:</th>
+                <td th: text="${groupName}">Group Name</td>
+            </tr>
+            <tr>
+                <th>Người tạo:</th>
+                <td th:text="${creatorName}">Creator Name</td>
+            </tr>
+            <tr>
+                <th>Thời gian:</th>
+                <td>
+                    <span th:text="${#temporals.format(startDate, 'dd/MM/yyyy')}">01/01/2024</span>
+                    -
+                    <span th:text="${#temporals.format(endDate, 'dd/MM/yyyy')}">31/03/2024</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Số nhân viên:</th>
+                <td th:text="${employeeCount}">10</td>
+            </tr>
+        </table>
+
+        <p style="text-align: center;">
+            <a th:href="${approvalLink}" class="button">Xem chi tiết và phê duyệt</a>
+        </p>
+
+        <p style="color: #666; font-size: 14px;">
+            Vui lòng phê duyệt kế hoạch này trong vòng 2 ngày làm việc.
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>Email này được gửi tự động từ hệ thống DENSO Anomaly Training. </p>
+        <p>Vui lòng không trả lời email này.</p>
+        <p>&copy; 2026 DENSO Vietnam. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

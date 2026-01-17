@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        . reject-reason {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>DENSO Anomaly Training System</h1>
+    </div>
+
+    <div class="content">
+        <h2>⚠️ Kế hoạch huấn luyện cần chỉnh sửa</h2>
+
+        <p>Kính gửi <strong th: text="${recipientName}">Team Leader Name</strong>,</p>
+
+        <p>Kế hoạch huấn luyện <strong th:text="${planTitle}">Plan Title</strong> đã bị từ chối bởi
+            <strong th:text="${rejectorName}">Supervisor Name</strong>.</p>
+
+        <div class="reject-reason">
+            <strong>Lý do từ chối:</strong>
+            <p th:text="${rejectReason}">Reject reason goes here</p>
+        </div>
+
+        <p>Vui lòng chỉnh sửa kế hoạch và gửi lại để được phê duyệt.</p>
+
+        <p style="text-align: center;">
+            <a th:href="${editLink}" class="button">Chỉnh sửa kế hoạch</a>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>Email này được gửi tự động từ hệ thống DENSO Anomaly Training.</p>
+        <p>&copy; 2026 DENSO Vietnam. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

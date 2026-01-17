@@ -4,9 +4,11 @@ import com.denso.anomaly_training_backend.model.NotificationTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NotificationTemplateRepository extends JpaRepository<NotificationTemplate, String> {
+
+    Optional<NotificationTemplate> findByCodeAndDeleteFlagFalse(String code);
 }
 

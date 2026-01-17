@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📅 Nhắc nhở huấn luyện</h1>
+    </div>
+
+    <div class="content">
+        <h2>Lịch kiểm tra huấn luyện hôm nay</h2>
+
+        <p>Kính gửi <strong th:text="${recipientName}">Team Leader</strong>,</p>
+
+        <p>Hôm nay (<strong th:text="${#temporals.format(today, 'dd/MM/yyyy')}">01/01/2026</strong>),
+            bạn có lịch kiểm tra huấn luyện cho các nhân viên sau:</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Mã NV</th>
+                <th>Họ tên</th>
+                <th>Công đoạn</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, iterStat : ${trainingItems}">
+                <td th:text="${iterStat.count}">1</td>
+                <td th:text="${item.employeeCode}">NV001</td>
+                <td th:text="${item. employeeName}">Nguyen Van A</td>
+                <td th:text="${item. processName}">Process A</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>Vui lòng thực hiện kiểm tra và ghi nhận kết quả vào hệ thống.</p>
+
+        <p style="text-align:  center;">
+            <a th: href="${dashboardLink}" class="button">Xem chi tiết</a>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>Email này được gửi tự động từ hệ thống DENSO Anomaly Training.</p>
+        <p>&copy; 2026 DENSO Vietnam. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

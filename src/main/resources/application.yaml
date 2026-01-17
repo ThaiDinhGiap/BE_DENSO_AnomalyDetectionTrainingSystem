@@ -8,12 +8,12 @@ spring:
     password: ${DB_PASSWORD:Root@123}
 
   jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
       hibernate:
-          ddl-auto: validate
-      properties:
-          hibernate:
-              show-sql: true
-              format_sql: true
+        show-sql: true
+        format_sql: true
 
   sql:
     init:
@@ -55,9 +55,10 @@ spring:
           starttls:
             enable: true
             required: true
-          connection timeout: 5000
+          connectiontimeout: 5000
           timeout: 5000
-          write timeout: 5000
+          writetimeout: 5000
+        from: ${MAIL_USERNAME}
 
   security:
     oauth2:
@@ -89,7 +90,7 @@ logging:
 jwt:
   # JWT secret must be at least 256 bits (32 characters) for HS256 algorithm
   # In production, always use environment variable JWT_SECRET with a secure random value
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:mySecretKeyForDevelopmentOnlyMustBeAtLeast256Bits}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
@@ -103,4 +104,14 @@ cors:
 
 app:
   rabbitmq:
-    enabled: ${RABBITMQ_ENABLED:false}
+    enabled: ${RABBITMQ_ENABLED:true}
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+  scheduler:
+    # Training Reminders
+    training-reminder-today: "0 0 6 * * ?"
+    training-reminder-upcoming: "0 0 17 * * ?"
+    training-overdue-warning: "0 0 8 * * ?"
+    # Approval Overdue
+    approval-overdue: "0 0 8,14 * * ?"
+    approval-overdue-hours: 24

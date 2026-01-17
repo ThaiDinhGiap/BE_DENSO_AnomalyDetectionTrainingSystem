@@ -18,13 +18,17 @@ public class IssueDetail extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "issue_report_id")
-    IssueReport issueReport;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private IssueReport issueReport;
 
     @Column(name = "defect_description", nullable = false, columnDefinition = "text")
     String defectDescription;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     Process process;
 
     @Column(name = "detected_date", nullable = false)

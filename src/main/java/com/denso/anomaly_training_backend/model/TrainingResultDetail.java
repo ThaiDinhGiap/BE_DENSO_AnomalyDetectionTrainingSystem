@@ -1,8 +1,24 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.TrainingResultDetailStatus;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -21,20 +37,40 @@ public class TrainingResultDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "training_result_id", nullable = false)
-    private Long trainingResultId;
+    // --- REFACTORED RELATIONSHIPS ---
 
-    @Column(name = "training_plan_detail_id", nullable = false)
-    private Long trainingPlanDetailId;
+    // 1. Training Result (Parent)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_result_id", nullable = false)
+    @ToString.Exclude // Prevent infinite loop / lazy initialization error
+    @EqualsAndHashCode.Exclude
+    private TrainingResult trainingResult;
+
+    // 2. The specific field you asked about
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_plan_detail_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingPlanDetail trainingPlanDetail;
+
+    // 3. Product Group
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_group_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private GroupProduct groupProduct;
+
+    // 4. Training Topic (Nullable)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_topic_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingTopic trainingTopic;
+
+    // --- SIMPLE COLUMNS ---
 
     @Column(name = "actual_date", nullable = false)
     private LocalDate actualDate;
-
-    @Column(name = "product_group_id", nullable = false)
-    private Long productGroupId;
-
-    @Column(name = "training_topic_id")
-    private Long trainingTopicId;
 
     @Column(name = "time_in", nullable = false)
     private LocalTime timeIn;
@@ -42,17 +78,34 @@ public class TrainingResultDetail extends BaseEntity {
     @Column(name = "time_out", nullable = false)
     private LocalTime timeOut;
 
-    @Column(name = "signature_pro_in")
-    private Long signatureProIn;
+    // --- USER SIGNATURES (Should also be Objects) ---
 
-    @Column(name = "signature_fi_in")
-    private Long signatureFiIn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_pro_in")
+    @ToString.Exclude
+    private User signatureProIn;
 
-    @Column(name = "signature_pro_out")
-    private Long signatureProOut;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_fi_in")
+    @ToString.Exclude
+    private User signatureFiIn;
 
-    @Column(name = "signature_fi_out")
-    private Long signatureFiOut;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_pro_out")
+    @ToString.Exclude
+    private User signatureProOut;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_fi_out")
+    @ToString.Exclude
+    private User signatureFiOut;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sv_confirmation")
+    @ToString.Exclude
+    private User svConfirmation;
+
+    // --- OTHER FIELDS ---
 
     @Column(name = "detection_time")
     private Integer detectionTime;
@@ -63,17 +116,15 @@ public class TrainingResultDetail extends BaseEntity {
     @Column(name = "remedial_action", columnDefinition = "text")
     private String remedialAction;
 
-    @Column(name = "sv_confirmation")
-    private Long svConfirmation;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     private TrainingResultDetailStatus status = TrainingResultDetailStatus.DRAFT;
 
     @Column(name = "current_version")
+    @Builder.Default
     private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
 }
-

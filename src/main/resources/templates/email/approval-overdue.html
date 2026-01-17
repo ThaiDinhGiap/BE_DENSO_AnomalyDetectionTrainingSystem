@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #ffc107;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        . footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        . summary-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .count-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📋 Nhắc nhở: Phê duyệt đang chờ xử lý</h1>
+    </div>
+
+    <div class="content">
+        <p>Kính gửi <strong th:text="${recipientName}">Supervisor/Manager</strong>,</p>
+
+        <p>Bạn có <span class="count-badge" th: text="${pendingCount}">0</span> mục cần phê duyệt đã chờ quá <strong
+                th:text="${overdueHours}">24</strong> giờ:</p>
+
+        <div class="summary-box">
+            <table style="width: 100%; border:  none;">
+                <tr th:if="${pendingPlansCount > 0}">
+                    <td>📅 Kế hoạch huấn luyện:</td>
+                    <td style="text-align: right;"><strong th:text="${pendingPlansCount}">0</strong></td>
+                </tr>
+                <tr th:if="${pendingResultsCount > 0}">
+                    <td>📝 Kết quả huấn luyện:</td>
+                    <td style="text-align: right;"><strong th:text="${pendingResultsCount}">0</strong></td>
+                </tr>
+                <tr th:if="${pendingIssuesCount > 0}">
+                    <td>🔴 Báo cáo sự cố:</td>
+                    <td style="text-align: right;"><strong th:text="${pendingIssuesCount}">0</strong></td>
+                </tr>
+                <tr th:if="${pendingTopicsCount > 0}">
+                    <td>📚 Nội dung huấn luyện:</td>
+                    <td style="text-align: right;"><strong th:text="${pendingTopicsCount}">0</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <p>Vui lòng xử lý các phê duyệt này để đảm bảo tiến độ công việc.</p>
+
+        <p style="text-align: center;">
+            <a th:href="${approvalLink}" class="button">Xem và phê duyệt</a>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>Email này được gửi tự động từ hệ thống DENSO Anomaly Training. </p>
+        <p>Bạn sẽ tiếp tục nhận được nhắc nhở cho đến khi xử lý xong.</p>
+        <p>&copy; 2026 DENSO Vietnam. All rights reserved. </p>
+    </div>
+</div>
+</body>
+</html>
