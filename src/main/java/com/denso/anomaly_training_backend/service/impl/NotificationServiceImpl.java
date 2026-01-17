@@ -10,6 +10,7 @@ import com.denso.anomaly_training_backend.repository.NotificationSettingReposito
 import com.denso.anomaly_training_backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty(prefix = "app.rabbitmq", name = "enabled", havingValue = "true")
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationProducer notificationProducer;

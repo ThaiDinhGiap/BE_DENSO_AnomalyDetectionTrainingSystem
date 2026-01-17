@@ -90,7 +90,7 @@ logging:
 jwt:
   # JWT secret must be at least 256 bits (32 characters) for HS256 algorithm
   # In production, always use environment variable JWT_SECRET with a secure random value
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:mySecretKeyForDevelopmentOnlyMustBeAtLeast256Bits}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
