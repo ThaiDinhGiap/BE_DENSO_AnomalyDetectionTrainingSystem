@@ -2,9 +2,27 @@ package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.IssueReportStatus;
 import com.denso.anomaly_training_backend.enums.RejectLevel;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "issue_report")
@@ -19,24 +37,34 @@ public class IssueReport extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "verified_by_sv")
-    private Long verifiedBySv;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "verified_by_sv")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User verifiedBySv;
 
     @Column(name = "verified_at_sv")
-    private java.time.Instant verifiedAtSv;
+    private Instant verifiedAtSv;
 
-    @Column(name = "approved_by_manager")
-    private Long approvedByManager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by_manager")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User approvedByManager;
 
     @Column(name = "approved_at_manager")
-    private java.time.Instant approvedAtManager;
+    private Instant approvedAtManager;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     private IssueReportStatus status = IssueReportStatus.DRAFT;
 
-    @Column(name = "rejected_by")
-    private Long rejectedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rejected_by")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User rejectedBy;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
@@ -46,6 +74,7 @@ public class IssueReport extends BaseEntity {
     private String rejectReason;
 
     @Column(name = "current_version")
+    @Builder.Default
     private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")

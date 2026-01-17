@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.messaging.producer;
 
-import com.denso.anomaly_training_backend.dto.notification.EmailNotificationMessage;
+import com.denso.anomaly_training_backend.dto.notification.NotificationRequest;
 import com.denso.anomaly_training_backend.messaging.config.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,43 +18,31 @@ public class NotificationProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public void sendEmailNotification(EmailNotificationMessage message) {
+    public void sendNotification(NotificationRequest request) {
         try {
-            // Tạo correlation ID để trace
-            message.setCorrelationId(UUID.randomUUID().toString());
+            if (request.getCorrelationId() == null) {
+                request.setCorrelationId(UUID.randomUUID().toString());
+            }
 
-            // Gửi vào queue với priority
             rabbitTemplate.convertAndSend(
                     RabbitMQConfig.NOTIFICATION_EXCHANGE,
                     RabbitMQConfig.NOTIFICATION_ROUTING_KEY,
-                    message,
-                    msg -> {
-                        msg.getMessageProperties().setPriority(message.getPriority());
-                        msg.getMessageProperties().setContentType("application/json");
-                        msg.getMessageProperties().setHeader("x-retry-count", message.getRetryCount());
-                        return msg;
+                    request,
+                    message -> {
+                        message.getMessageProperties().setPriority(request.getPriority());
+                        message.getMessageProperties().setContentType("application/json");
+                        message.getMessageProperties().setHeader("x-retry-count", request.getRetryCount());
+                        message.getMessageProperties().setHeader("x-notification-type", request.getType().name());
+                        return message;
                     }
             );
 
-            log.info("Email notification queued - Template: {}, Recipient: {}, CorrelationId: {}",
-                    message.getTemplateCode(),
-                    message.getRecipientEmail(),
-                    message.getCorrelationId());
+            log.info("Notification queued - Type: {}, Recipient: {}, CorrelationId: {}",
+                    request.getType(), request.getRecipientEmail(), request.getCorrelationId());
 
         } catch (Exception e) {
-            log.error("Failed to queue email notification", e);
-            // Có thể lưu vào DB backup nếu RabbitMQ down
-            saveToBackupQueue(message);
+            log.error("Failed to queue notification - Type: {}, Error: {}", request.getType(), e.getMessage());
+            // TODO: Save to backup table for retry
         }
-    }
-
-    // Batch send cho việc gửi hàng loạt reminder
-    public void sendBatchNotifications(List<EmailNotificationMessage> messages) {
-        messages.forEach(this::sendEmailNotification);
-    }
-
-    private void saveToBackupQueue(EmailNotificationMessage message) {
-        // Fallback: lưu vào DB nếu RabbitMQ không available
-        // Sẽ có scheduled job để retry gửi lại
     }
 }

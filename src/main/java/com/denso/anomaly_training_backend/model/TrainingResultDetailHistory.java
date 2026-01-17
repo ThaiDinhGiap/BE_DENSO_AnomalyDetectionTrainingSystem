@@ -1,7 +1,21 @@
 package com.denso.anomaly_training_backend.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -20,11 +34,17 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "training_result_detail_id", nullable = false)
-    private Long trainingResultDetailId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_result_detail_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingResultDetail trainingResultDetail;
 
-    @Column(name = "training_result_history_id", nullable = false)
-    private Long trainingResultHistoryId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_result_history_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TrainingResultHistory trainingResultHistory;
 
     @Column(name = "version", nullable = false)
     private Integer version;
@@ -32,8 +52,11 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @Column(name = "actual_date")
     private LocalDate actualDate;
 
-    @Column(name = "product_group_id")
-    private Long productGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_group_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private GroupProduct productGroup;
 
     @Column(name = "time_in")
     private LocalTime timeIn;
@@ -41,17 +64,29 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @Column(name = "time_out")
     private LocalTime timeOut;
 
-    @Column(name = "signature_pro_in")
-    private Long signatureProIn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_pro_in")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User signatureProIn;
 
-    @Column(name = "signature_fi_in")
-    private Long signatureFiIn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_fi_in")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User signatureFiIn;
 
-    @Column(name = "signature_pro_out")
-    private Long signatureProOut;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_pro_out")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User signatureProOut;
 
-    @Column(name = "signature_fi_out")
-    private Long signatureFiOut;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "signature_fi_out")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User signatureFiOut;
 
     @Column(name = "detection_time")
     private Integer detectionTime;
@@ -62,8 +97,11 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @Column(name = "remedial_action", columnDefinition = "text")
     private String remedialAction;
 
-    @Column(name = "rejected_by")
-    private Long rejectedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rejected_by")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User rejectedBy;
 
     @Column(name = "reject_reason", columnDefinition = "text")
     private String rejectReason;

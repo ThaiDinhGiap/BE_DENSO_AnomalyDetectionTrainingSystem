@@ -1,9 +1,27 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.TrainingTopicStatus;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "training_topics")
@@ -23,23 +41,31 @@ public class TrainingTopic extends BaseEntity {
     @Column(length = 200, nullable = false)
     private String title;
 
-    @Column(name = "verified_by_sv")
-    private Long verifiedBySv;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "verified_by_sv")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User verifiedBySv;
 
     @Column(name = "verified_at_sv")
-    private java.time.Instant verifiedAtSv;
+    private Instant verifiedAtSv;
 
-    @Column(name = "approved_by_manager")
-    private Long approvedByManager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by_manager")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User approvedByManager;
 
     @Column(name = "approved_at_manager")
-    private java.time.Instant approvedAtManager;
+    private Instant approvedAtManager;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     private TrainingTopicStatus status = TrainingTopicStatus.DRAFT;
 
     @Column(name = "current_version")
+    @Builder.Default
     private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")

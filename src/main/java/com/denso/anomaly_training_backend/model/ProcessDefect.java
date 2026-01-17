@@ -1,7 +1,21 @@
 package com.denso.anomaly_training_backend.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -21,6 +35,8 @@ public class ProcessDefect extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "issue_detail_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private IssueDetail issueDetail;
 
     @Column(name = "defect_description", nullable = false, columnDefinition = "text")
@@ -28,6 +44,8 @@ public class ProcessDefect extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Process process;
 
     @Column(name = "detected_date", nullable = false)
