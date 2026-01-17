@@ -1,17 +1,7 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.TrainingPlanStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "training_plan")
@@ -79,4 +71,9 @@ public class TrainingPlan extends BaseEntity {
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
+
+    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @Builder.Default
+    List<TrainingPlanDetail> details = new ArrayList<>();
 }
