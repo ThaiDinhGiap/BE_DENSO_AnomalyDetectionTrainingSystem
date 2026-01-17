@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.enums;
 
-public enum TrainingPlanDetailResultStatus {
+public enum TrainingPlanDetailStatus {
     PENDING,
     DONE,
     SICK_LEAVE,

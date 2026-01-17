@@ -1,17 +1,7 @@
 package com.denso.anomaly_training_backend.model;
 
 import com.denso.anomaly_training_backend.enums.RejectLevel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "training_plan_history")
@@ -55,23 +46,23 @@ public class TrainingPlanHistory extends BaseEntity {
     @Column(name = "month_end")
     private LocalDate monthEnd;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Group group;
+    @Column(name = "group_id")
+    private Long groupId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "verified_by_sv")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User verifiedBySv;
+    @Column(name = "group_name")
+    private String groupName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rejected_by")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User rejectedBy;
+    @Column(name = "verified_by_sv")
+    private Long verifiedBySvId;
+
+    @Column(name = "verified_by_sv_name")
+    private String verifiedBySvName;
+
+    @Column(name = "reject_by")
+    private Long rejectedById;
+
+    @Column(name = "reject_by_name")
+    private String rejectedByName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
@@ -82,4 +73,7 @@ public class TrainingPlanHistory extends BaseEntity {
 
     @Column(name = "recorded_at")
     private Instant recordedAt;
+
+    @OneToMany(mappedBy = "trainingPlanHistory", cascade = CascadeType.ALL)
+    List<TrainingPlanDetailHistory> historyDetails;
 }

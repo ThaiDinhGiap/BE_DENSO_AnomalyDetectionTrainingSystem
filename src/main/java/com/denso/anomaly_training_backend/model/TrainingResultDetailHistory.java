@@ -64,29 +64,29 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @Column(name = "time_out")
     private LocalTime timeOut;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_pro_in")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User signatureProIn;
+    @Column(name = "signature_pro_in")
+    private Long signatureProInId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_fi_in")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User signatureFiIn;
+    @Column(name = "signature_pro_in_name")
+    private String signatureProInName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_pro_out")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User signatureProOut;
+    @Column(name = "signature_fi_in")
+    private Long signatureFiInId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signature_fi_out")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User signatureFiOut;
+    @Column(name = "signature_fi_in_name")
+    private String signatureFiInName;
+
+    @Column(name = "signature_pro_out")
+    private Long signatureProOutId;
+
+    @Column(name = "signature_pro_out_name")
+    private String signatureProOutName;
+
+    @Column(name = "signature_fi_out")
+    private Long signatureFiOutId;
+
+    @Column(name = "signature_fi_out_name")
+    private String signatureFiOutName;
 
     @Column(name = "detection_time")
     private Integer detectionTime;
@@ -97,11 +97,11 @@ public class TrainingResultDetailHistory extends BaseEntity {
     @Column(name = "remedial_action", columnDefinition = "text")
     private String remedialAction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rejected_by")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User rejectedBy;
+    @Column(name = "reject_by")
+    private Long rejectedById;
+
+    @Column(name = "reject_by_name")
+    private String rejectedByName;
 
     @Column(name = "reject_reason", columnDefinition = "text")
     private String rejectReason;
