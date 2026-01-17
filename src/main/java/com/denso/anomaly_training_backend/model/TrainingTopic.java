@@ -1,15 +1,19 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingTopicStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "training_topics")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingTopic {
+public class TrainingTopic extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,12 +22,6 @@ public class TrainingTopic {
 
     @Column(length = 200, nullable = false)
     private String title;
-
-    @Column(name = "created_by_tl", nullable = false)
-    private Long createdByTl;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
 
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
@@ -37,15 +35,13 @@ public class TrainingTopic {
     @Column(name = "approved_at_manager")
     private java.time.Instant approvedAtManager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TrainingTopicStatus status = TrainingTopicStatus.DRAFT;
 
     @Column(name = "current_version")
-    private Integer currentVersion;
+    private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }

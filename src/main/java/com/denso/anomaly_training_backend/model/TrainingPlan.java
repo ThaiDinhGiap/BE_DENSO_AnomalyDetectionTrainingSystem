@@ -1,7 +1,9 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingPlanStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -9,10 +11,12 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "training_plan")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingPlan {
+public class TrainingPlan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,13 +34,6 @@ public class TrainingPlan {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl")
-    private User createdByTl;
-
-    @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "verified_by_sv")
     private User verifiedBySv;
@@ -53,14 +50,11 @@ public class TrainingPlan {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private PlanStatus status = PlanStatus.DRAFT;
+    private TrainingPlanStatus status = TrainingPlanStatus.DRAFT;
 
     @Column(name = "current_version")
     private Integer currentVersion = 1;
 
     @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
 }

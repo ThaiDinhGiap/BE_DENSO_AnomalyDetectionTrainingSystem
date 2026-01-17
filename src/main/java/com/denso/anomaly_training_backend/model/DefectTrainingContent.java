@@ -27,11 +27,11 @@ public class DefectTrainingContent extends BaseEntity{
     @Column(name = "category_name", nullable = false, length = 200)
     String categoryName;
 
-    @Column(name = "training_sample")
+    @Column(name = "training_sample", columnDefinition = "text")
     String trainingSample;
 
-    @Column(name = "training_detail", nullable = false)
-    String trainingDetail;
+    @Column(name = "training_detail", columnDefinition = "text", nullable = false)
+   String trainingDetail;
 
 
 }

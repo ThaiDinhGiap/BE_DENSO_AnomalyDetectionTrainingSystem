@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.dto.request;
 
-import com.denso.anomaly_training_backend.model.Role;
+import com.denso.anomaly_training_backend.enums.UserRole;
 import lombok.Data;
 
 
@@ -11,7 +11,7 @@ public class UserRequest {
     private String password;
     private String fullName;
     private String email;
-    private Role role;
+    private UserRole role;
     private Boolean isActive;
 
 }

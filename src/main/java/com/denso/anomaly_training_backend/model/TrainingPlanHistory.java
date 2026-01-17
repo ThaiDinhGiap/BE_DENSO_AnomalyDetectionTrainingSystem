@@ -1,15 +1,19 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.RejectLevel;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "training_plan_history")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingPlanHistory {
+public class TrainingPlanHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,17 +36,15 @@ public class TrainingPlanHistory {
     @Column(name = "group_id")
     private Long groupId;
 
-    @Column(name = "created_by_tl")
-    private Long createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 
     @Column(name = "rejected_by")
     private Long rejectedBy;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
-    private String rejectLevel;
+    private RejectLevel rejectLevel;
 
     @Column(name = "reject_reason", columnDefinition = "text")
     private String rejectReason;

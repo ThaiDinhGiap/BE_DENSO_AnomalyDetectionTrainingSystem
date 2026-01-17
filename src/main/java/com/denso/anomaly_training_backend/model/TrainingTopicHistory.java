@@ -1,15 +1,19 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingTopicStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "training_topics_history")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingTopicHistory {
+public class TrainingTopicHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,12 +23,6 @@ public class TrainingTopicHistory {
 
     @Column(name = "version", nullable = false)
     private Integer version;
-
-    @Column(name = "created_by_tl")
-    private Long createdByTl;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
 
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
@@ -38,8 +36,9 @@ public class TrainingTopicHistory {
     @Column(name = "approved_at_manager")
     private java.time.Instant approvedAtManager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TrainingTopicStatus status;
 
     @Column(name = "recorded_at")
     private java.time.Instant recordedAt;

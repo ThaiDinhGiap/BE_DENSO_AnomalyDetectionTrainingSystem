@@ -1,14 +1,15 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.OAuthProvider;
+import com.denso.anomaly_training_backend.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "users")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,30 +17,33 @@ import java.time.Instant;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false, length = 50, unique = true)
-    private String username;
+    String username;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "password_hash", length = 255)
+    String passwordHash;
 
     @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
+    String fullName;
 
-    @Column(length = 100)
-    private String email;
+    @Column(nullable = false, length = 100, unique = true)
+    String email;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role;
+    UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_provider", length = 20)
+    @Builder.Default
+    OAuthProvider oauthProvider = OAuthProvider.LOCAL;
+
+    @Column(name = "oauth_provider_id", length = 255)
+    String oauthProviderId;
 
     @Column(name = "is_active")
-    private Boolean isActive = true;
-
-//    @Column(name = "created_at", updatable = false)
-//    private Instant createdAt;
-//
-//    @Column(name = "updated_at")
-//    private Instant updatedAt;
+    @Builder.Default
+    Boolean isActive = true;
 }

@@ -2,14 +2,17 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "training_topic_detail")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingTopicDetail {
+public class TrainingTopicDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,10 +31,4 @@ public class TrainingTopicDetail {
 
     @Column(name = "training_detail", columnDefinition = "text", nullable = false)
     private String trainingDetail;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }

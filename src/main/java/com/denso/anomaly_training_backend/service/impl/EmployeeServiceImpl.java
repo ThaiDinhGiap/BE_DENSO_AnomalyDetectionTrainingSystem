@@ -3,7 +3,7 @@ package com.denso.anomaly_training_backend.service.impl;
 import com.denso.anomaly_training_backend.dto.request.EmployeeRequest;
 import com.denso.anomaly_training_backend.dto.response.EmployeeResponse;
 import com.denso.anomaly_training_backend.model.Employee;
-import com.denso.anomaly_training_backend.model.EmployeeStatus;
+import com.denso.anomaly_training_backend.enums.EmployeeStatus;
 import com.denso.anomaly_training_backend.mapper.EmployeeMapper;
 import com.denso.anomaly_training_backend.repository.EmployeeRepository;
 import com.denso.anomaly_training_backend.service.EmployeeService;

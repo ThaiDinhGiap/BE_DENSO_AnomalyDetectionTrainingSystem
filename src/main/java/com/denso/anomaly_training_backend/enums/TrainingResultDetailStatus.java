@@ -1,6 +1,6 @@
-package com.denso.anomaly_training_backend.model;
+package com.denso.anomaly_training_backend.enums;
 
-public enum TrainingResultStatus {
+public enum TrainingResultDetailStatus {
     DRAFT,
     WAITING_FI,
     REJECTED_BY_FI,

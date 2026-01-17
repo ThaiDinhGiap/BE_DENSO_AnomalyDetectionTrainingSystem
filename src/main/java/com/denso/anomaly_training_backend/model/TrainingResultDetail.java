@@ -1,7 +1,9 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingResultDetailStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,10 +11,12 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "training_result_detail")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingResultDetail {
+public class TrainingResultDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,25 +60,20 @@ public class TrainingResultDetail {
     @Column(name = "is_pass")
     private Boolean isPass;
 
-    @Column(name = "remedial_action")
+    @Column(name = "remedial_action", columnDefinition = "text")
     private String remedialAction;
 
     @Column(name = "sv_confirmation")
     private Long svConfirmation;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private TrainingResultDetailStatus status = TrainingResultDetailStatus.DRAFT;
 
     @Column(name = "current_version")
-    private Integer currentVersion;
+    private Integer currentVersion = 1;
 
-    @Column(name = "last_reject_reason")
+    @Column(name = "last_reject_reason", columnDefinition = "text")
     private String lastRejectReason;
-
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
-
-    @Column(name = "updated_at")
-    private java.time.Instant updatedAt;
 }
 

@@ -1,18 +1,21 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingPlanDetailResultStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "training_plan_detail")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingPlanDetail {
+public class TrainingPlanDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +30,7 @@ public class TrainingPlanDetail {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "process_id")
-    private ProcessEntity process;
+    private Process process;
 
     @Column(name = "target_month", nullable = false)
     private LocalDate targetMonth;
@@ -43,11 +46,5 @@ public class TrainingPlanDetail {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_status")
-    private PlanDetailStatus resultStatus = PlanDetailStatus.PENDING;
-
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    private TrainingPlanDetailResultStatus resultStatus = TrainingPlanDetailResultStatus.PENDING;
 }

@@ -2,6 +2,7 @@ package com.denso.anomaly_training_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,10 +10,12 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "training_result_detail_history")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class TrainingResultDetailHistory {
+public class TrainingResultDetailHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -62,6 +65,6 @@ public class TrainingResultDetailHistory {
     @Column(name = "rejected_by")
     private Long rejectedBy;
 
-    @Column(name = "created_at")
-    private java.time.Instant createdAt;
+    @Column(name = "reject_reason", columnDefinition = "text")
+    private String rejectReason;
 }

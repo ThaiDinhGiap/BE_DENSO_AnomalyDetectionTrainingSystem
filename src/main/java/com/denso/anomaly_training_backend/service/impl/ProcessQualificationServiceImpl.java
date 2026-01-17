@@ -48,8 +48,8 @@ public class ProcessQualificationServiceImpl implements ProcessQualificationServ
                 .orElseThrow(() -> new RuntimeException("Qualification not found id: " + id));
 
         // Nếu user đổi nhân viên hoặc quy trình -> Check Unique lại
-        boolean isChanged = !entity.getEmployeeId().equals(request.getEmployeeId())
-                || !entity.getProcessId().equals(request.getProcessId());
+        boolean isChanged = !entity.getEmployee().getId().equals(request.getEmployeeId())
+                || !entity.getProcess().getId().equals(request.getProcessId());
 
         if (isChanged) {
             validateRequest(request); // Check ID tồn tại

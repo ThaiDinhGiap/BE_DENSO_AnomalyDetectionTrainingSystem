@@ -1,19 +1,36 @@
 package com.denso.anomaly_training_backend.dto.response;
 
-import com.denso.anomaly_training_backend.model.Role;
+import com.denso.anomaly_training_backend.enums.OAuthProvider;
+import com.denso.anomaly_training_backend.enums.UserRole;
+import com.denso.anomaly_training_backend.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
+
     private Long id;
     private String username;
-    private String fullName;
     private String email;
-    private Role role;
+    private String fullName;
+    private UserRole role;
+    private OAuthProvider oauthProvider;
     private Boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+    public static UserResponse fromEntity(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .oauthProvider(user.getOauthProvider())
+                .isActive(user. getIsActive())
+                .build();
+    }
 }

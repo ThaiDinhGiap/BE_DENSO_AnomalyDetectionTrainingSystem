@@ -1,12 +1,7 @@
--- Flyway migration V1: initialize schema for anomaly_training
--- This migration creates all application tables. It does NOT create the database itself.
+-- Flyway migration V1: Initialize schema for anomaly_training with BaseEntity fields
+-- This migration creates all application tables with complete audit fields from BaseEntity
+-- ALL tables (including history tables) inherit full BaseEntity fields
 
-
--- CREATE DATABASE IF NOT EXISTS anomaly_training
---     CHARACTER SET utf8mb4
---     COLLATE utf8mb4_unicode_ci;
-
--- Flyway migration V1: Initialize schema for anomaly_training
 SET FOREIGN_KEY_CHECKS=0;
 
 -- Drop tables if exists (Reverse order of creation)
@@ -51,10 +46,17 @@ CREATE TABLE users (
                        full_name VARCHAR(100) NOT NULL,
                        role ENUM('MANAGER', 'SUPERVISOR', 'TEAM_LEADER', 'FINAL_INSPECTION') NOT NULL,
                        is_active BOOLEAN DEFAULT TRUE,
+
+    -- BaseEntity fields
+                       delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       created_by NVARCHAR(255),
                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                       updated_by NVARCHAR(255),
+
                        INDEX idx_role (role),
-                       INDEX idx_active (is_active)
+                       INDEX idx_active (is_active),
+                       INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -65,7 +67,15 @@ CREATE TABLE notification_templates (
                                         subject_template VARCHAR(200) NOT NULL,
                                         body_template TEXT NOT NULL,
                                         description VARCHAR(500),
-                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+    -- BaseEntity fields
+                                        delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                        created_by NVARCHAR(255),
+                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                        updated_by NVARCHAR(255),
+
+                                        INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -81,10 +91,18 @@ CREATE TABLE notification_settings (
                                        max_reminders INT DEFAULT 5,
                                        preferred_send_time TIME DEFAULT '08:00:00',
                                        escalate_after_days INT,
+
+    -- BaseEntity fields
+                                       delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                       created_by NVARCHAR(255),
                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                       updated_by NVARCHAR(255),
+
                                        FOREIGN KEY (template_code) REFERENCES notification_templates(code) ON DELETE CASCADE,
                                        INDEX idx_template (template_code),
-                                       INDEX idx_enabled (is_enabled)
+                                       INDEX idx_enabled (is_enabled),
+                                       INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -105,9 +123,17 @@ CREATE TABLE notification_queue (
                                     error_message TEXT,
                                     scheduled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                     sent_at TIMESTAMP NULL,
+
+    -- BaseEntity fields
+                                    delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    created_by NVARCHAR(255),
+                                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                    updated_by NVARCHAR(255),
+
                                     CONSTRAINT fk_nq_user FOREIGN KEY (recipient_user_id) REFERENCES users(id),
-                                    CONSTRAINT fk_nq_template FOREIGN KEY (notification_type) REFERENCES notification_templates(code)
+                                    CONSTRAINT fk_nq_template FOREIGN KEY (notification_type) REFERENCES notification_templates(code),
+                                    INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -117,26 +143,40 @@ CREATE TABLE sections (
                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
                           name VARCHAR(100) NOT NULL,
                           manager_id BIGINT NOT NULL,
+
+    -- BaseEntity fields
+                          delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          created_by NVARCHAR(255),
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          updated_by NVARCHAR(255),
+
                           FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE RESTRICT,
-                          INDEX idx_manager (manager_id)
+                          INDEX idx_manager (manager_id),
+                          INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
 -- 6. GROUPS TABLE
 -- ============================================
 CREATE TABLE `groups` (
-                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                        section_id BIGINT NOT NULL,
-                        name VARCHAR(100) NOT NULL,
-                        supervisor_id BIGINT NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                        FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE RESTRICT,
-                        FOREIGN KEY (supervisor_id) REFERENCES users(id) ON DELETE RESTRICT,
-                        INDEX idx_section (section_id),
-                        INDEX idx_supervisor (supervisor_id)
+                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                          section_id BIGINT NOT NULL,
+                          name VARCHAR(100) NOT NULL,
+                          supervisor_id BIGINT NOT NULL,
+
+    -- BaseEntity fields
+                          delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          created_by NVARCHAR(255),
+                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          updated_by NVARCHAR(255),
+
+                          FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE RESTRICT,
+                          FOREIGN KEY (supervisor_id) REFERENCES users(id) ON DELETE RESTRICT,
+                          INDEX idx_section (section_id),
+                          INDEX idx_supervisor (supervisor_id),
+                          INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -150,11 +190,18 @@ CREATE TABLE processes (
                            description TEXT,
                            classification TINYINT NOT NULL DEFAULT 1,
                            standard_time_jt DECIMAL(10,2),
+
+    -- BaseEntity fields
+                           delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           created_by NVARCHAR(255),
                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                           updated_by NVARCHAR(255),
+
                            FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
                            UNIQUE KEY uk_group_code (group_id, code),
-                           INDEX idx_classification (classification)
+                           INDEX idx_classification (classification),
+                           INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -164,10 +211,18 @@ CREATE TABLE product_group (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                group_id BIGINT NOT NULL,
                                product_code VARCHAR(50) NOT NULL,
+
+    -- BaseEntity fields
+                               delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                               created_by NVARCHAR(255),
+                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                               updated_by NVARCHAR(255),
+
                                FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
                                UNIQUE KEY uk_group_product (group_id, product_code),
-                               INDEX idx_product_code (product_code)
+                               INDEX idx_product_code (product_code),
+                               INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -178,12 +233,19 @@ CREATE TABLE teams (
                        group_id BIGINT NOT NULL,
                        name VARCHAR(100) NOT NULL,
                        team_leader_id BIGINT NOT NULL,
+
+    -- BaseEntity fields
+                       delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       created_by NVARCHAR(255),
                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                       updated_by NVARCHAR(255),
+
                        FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
                        FOREIGN KEY (team_leader_id) REFERENCES users(id) ON DELETE RESTRICT,
                        INDEX idx_group (group_id),
-                       INDEX idx_team_leader (team_leader_id)
+                       INDEX idx_team_leader (team_leader_id),
+                       INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -195,12 +257,19 @@ CREATE TABLE employees (
                            full_name VARCHAR(100) NOT NULL,
                            team_id BIGINT NOT NULL,
                            status ENUM('ACTIVE', 'MATERNITY_LEAVE', 'RESIGNED') DEFAULT 'ACTIVE',
+
+    -- BaseEntity fields
+                           delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           created_by NVARCHAR(255),
                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                           updated_by NVARCHAR(255),
+
                            FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT,
                            INDEX idx_team (team_id),
                            INDEX idx_status (status),
-                           INDEX idx_employee_code (employee_code)
+                           INDEX idx_employee_code (employee_code),
+                           INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -213,12 +282,19 @@ CREATE TABLE process_qualifications (
                                         is_qualified BOOLEAN DEFAULT TRUE,
                                         certified_date DATE,
                                         expiry_date DATE,
+
+    -- BaseEntity fields
+                                        delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                        created_by NVARCHAR(255),
                                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                        updated_by NVARCHAR(255),
+
                                         FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE,
                                         FOREIGN KEY (process_id) REFERENCES processes(id) ON DELETE CASCADE,
                                         UNIQUE KEY uk_employee_process (employee_id, process_id),
-                                        INDEX idx_qualified (is_qualified)
+                                        INDEX idx_qualified (is_qualified),
+                                        INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -226,8 +302,6 @@ CREATE TABLE process_qualifications (
 -- ============================================
 CREATE TABLE issue_report (
                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                              created_by_tl BIGINT NOT NULL,
-                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               verified_by_sv BIGINT,
                               verified_at_sv TIMESTAMP NULL,
                               approved_by_manager BIGINT,
@@ -238,14 +312,19 @@ CREATE TABLE issue_report (
                               reject_reason TEXT,
                               current_version INT DEFAULT 1,
                               last_reject_reason TEXT,
+
+    -- BaseEntity fields
+                              delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              created_by NVARCHAR(255),
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                              FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
+                              updated_by NVARCHAR(255),
+
                               FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                               FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                               FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE RESTRICT,
                               INDEX idx_status (status),
-                              INDEX idx_created_by (created_by_tl),
-                              INDEX idx_created_at (created_at)
+                              INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -258,10 +337,19 @@ CREATE TABLE issue_report_history (
                                       rejected_by BIGINT,
                                       reject_reason TEXT,
                                       recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- BaseEntity fields (FULL - including updated fields)
+                                      delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                      created_by NVARCHAR(255),
+                                      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                      updated_by NVARCHAR(255),
+
                                       FOREIGN KEY (issue_report_id) REFERENCES issue_report(id) ON DELETE CASCADE,
                                       FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE SET NULL,
                                       INDEX idx_issue_report (issue_report_id),
-                                      INDEX idx_version (version)
+                                      INDEX idx_version (version),
+                                      INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -275,14 +363,21 @@ CREATE TABLE issue_detail (
                               detected_date DATE NOT NULL,
                               is_escaped BOOLEAN DEFAULT FALSE,
                               note TEXT,
+
+    -- BaseEntity fields
+                              delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              created_by NVARCHAR(255),
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                              updated_by NVARCHAR(255),
+
                               FOREIGN KEY (issue_report_id) REFERENCES issue_report(id) ON DELETE CASCADE,
                               FOREIGN KEY (process_id) REFERENCES processes(id) ON DELETE RESTRICT,
                               INDEX idx_issue_report (issue_report_id),
                               INDEX idx_process (process_id),
                               INDEX idx_detected_date (detected_date),
-                              INDEX idx_is_escaped (is_escaped)
+                              INDEX idx_is_escaped (is_escaped),
+                              INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -296,8 +391,17 @@ CREATE TABLE issue_detail_history (
                                       detected_date DATE NOT NULL,
                                       is_escaped BOOLEAN DEFAULT FALSE,
                                       note TEXT,
+
+    -- BaseEntity fields (FULL - including updated fields)
+                                      delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                      created_by NVARCHAR(255),
+                                      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                      updated_by NVARCHAR(255),
+
                                       FOREIGN KEY (issue_report_history_id) REFERENCES issue_report_history(id) ON DELETE CASCADE,
-                                      INDEX idx_history (issue_report_history_id)
+                                      INDEX idx_history (issue_report_history_id),
+                                      INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -311,14 +415,21 @@ CREATE TABLE process_defects (
                                  detected_date DATE NOT NULL,
                                  is_escaped BOOLEAN DEFAULT FALSE,
                                  note TEXT,
+
+    -- BaseEntity fields
+                                 delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                 created_by NVARCHAR(255),
                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 updated_by NVARCHAR(255),
+
                                  FOREIGN KEY (issue_detail_id) REFERENCES issue_detail(id) ON DELETE CASCADE,
                                  FOREIGN KEY (process_id) REFERENCES processes(id) ON DELETE RESTRICT,
                                  UNIQUE KEY uk_issue_detail (issue_detail_id),
                                  INDEX idx_process (process_id),
                                  INDEX idx_detected_date (detected_date),
-                                 INDEX idx_is_escaped (is_escaped)
+                                 INDEX idx_is_escaped (is_escaped),
+                                 INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -328,8 +439,6 @@ CREATE TABLE training_topics (
                                  id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                  version INT DEFAULT 1,
                                  title VARCHAR(200) NOT NULL,
-                                 created_by_tl BIGINT NOT NULL,
-                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                  verified_by_sv BIGINT,
                                  verified_at_sv TIMESTAMP NULL,
                                  approved_by_manager BIGINT,
@@ -337,12 +446,18 @@ CREATE TABLE training_topics (
                                  status ENUM('DRAFT', 'WAITING_SV', 'REJECTED_BY_SV', 'WAITING_MANAGER', 'REJECTED_BY_MANAGER', 'APPROVED', 'NEED_UPDATE') DEFAULT 'DRAFT',
                                  current_version INT DEFAULT 1,
                                  last_reject_reason TEXT,
+
+    -- BaseEntity fields
+                                 delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                 created_by NVARCHAR(255),
                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                 FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
+                                 updated_by NVARCHAR(255),
+
                                  FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                                  INDEX idx_status (status),
-                                 INDEX idx_created_by (created_by_tl)
+                                 INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -352,17 +467,24 @@ CREATE TABLE training_topics_history (
                                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                          training_topic_id BIGINT NOT NULL,
                                          version INT NOT NULL,
-                                         created_by_tl BIGINT,
-                                         created_at TIMESTAMP NULL,
                                          verified_by_sv BIGINT,
                                          verified_at_sv TIMESTAMP NULL,
                                          approved_by_manager BIGINT,
                                          approved_at_manager TIMESTAMP NULL,
                                          status ENUM('DRAFT', 'WAITING_SV', 'REJECTED_BY_SV', 'WAITING_MANAGER', 'REJECTED_BY_MANAGER', 'APPROVED', 'NEED_UPDATE'),
                                          recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- BaseEntity fields (FULL - including updated fields)
+                                         delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         created_by NVARCHAR(255),
+                                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                         updated_by NVARCHAR(255),
+
                                          FOREIGN KEY (training_topic_id) REFERENCES training_topics(id) ON DELETE CASCADE,
                                          INDEX idx_topic (training_topic_id),
-                                         INDEX idx_version (version)
+                                         INDEX idx_version (version),
+                                         INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -371,16 +493,23 @@ CREATE TABLE training_topics_history (
 CREATE TABLE training_topic_detail (
                                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                        topic_id BIGINT NOT NULL,
-                                       issue_detail_id BIGINT,
+                                       process_defect_id BIGINT COMMENT 'Link to process_defect (refactored from issue_detail_id)',
                                        category_name VARCHAR(200) NOT NULL,
                                        training_sample TEXT,
                                        training_detail TEXT NOT NULL,
+
+    -- BaseEntity fields
+                                       delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                       created_by NVARCHAR(255),
                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                       updated_by NVARCHAR(255),
+
                                        FOREIGN KEY (topic_id) REFERENCES training_topics(id) ON DELETE CASCADE,
-                                       FOREIGN KEY (issue_detail_id) REFERENCES issue_detail(id) ON DELETE SET NULL,
+                                       FOREIGN KEY (process_defect_id) REFERENCES process_defects(id) ON DELETE SET NULL,
                                        INDEX idx_topic (topic_id),
-                                       INDEX idx_issue_detail (issue_detail_id)
+                                       INDEX idx_process_defect (process_defect_id),
+                                       INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -389,12 +518,21 @@ CREATE TABLE training_topic_detail (
 CREATE TABLE training_topic_detail_history (
                                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                                topic_history_id BIGINT NOT NULL,
-                                               issue_detail_id BIGINT,
+                                               process_defect_id BIGINT COMMENT 'Link to process_defect (refactored from issue_detail_id)',
                                                category_name VARCHAR(200) NOT NULL,
                                                training_sample TEXT,
                                                training_detail TEXT NOT NULL,
+
+    -- BaseEntity fields (FULL - including updated fields)
+                                               delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                               created_by NVARCHAR(255),
+                                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                               updated_by NVARCHAR(255),
+
                                                FOREIGN KEY (topic_history_id) REFERENCES training_topics_history(id) ON DELETE CASCADE,
-                                               INDEX idx_topic_history (topic_history_id)
+                                               INDEX idx_topic_history (topic_history_id),
+                                               INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -407,12 +545,19 @@ CREATE TABLE defect_training_content (
                                          category_name VARCHAR(200) NOT NULL,
                                          training_sample TEXT,
                                          training_detail TEXT NOT NULL,
+
+    -- BaseEntity fields
+                                         delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         created_by NVARCHAR(255),
                                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                         updated_by NVARCHAR(255),
+
                                          FOREIGN KEY (training_topic_detail_id) REFERENCES training_topic_detail(id) ON DELETE CASCADE,
                                          FOREIGN KEY (process_defect_id) REFERENCES process_defects(id) ON DELETE RESTRICT,
                                          INDEX idx_topic_detail (training_topic_detail_id),
-                                         INDEX idx_process_defect (process_defect_id)
+                                         INDEX idx_process_defect (process_defect_id),
+                                         INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -424,8 +569,6 @@ CREATE TABLE training_plan (
                                month_start DATE NOT NULL,
                                month_end DATE NOT NULL,
                                group_id BIGINT NOT NULL,
-                               created_by_tl BIGINT NOT NULL,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                verified_by_sv BIGINT,
                                verified_at_sv TIMESTAMP NULL,
                                approved_by_manager BIGINT,
@@ -433,15 +576,21 @@ CREATE TABLE training_plan (
                                status ENUM('DRAFT', 'WAITING_SV', 'REJECTED_BY_SV', 'WAITING_MANAGER', 'REJECTED_BY_MANAGER', 'APPROVED') DEFAULT 'DRAFT',
                                current_version INT DEFAULT 1,
                                last_reject_reason TEXT,
+
+    -- BaseEntity fields
+                               delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                               created_by NVARCHAR(255),
                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                               updated_by NVARCHAR(255),
+
                                FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
-                               FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
                                FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                                FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                                INDEX idx_status (status),
                                INDEX idx_group (group_id),
                                INDEX idx_month_range (month_start, month_end),
-                               INDEX idx_created_by (created_by_tl)
+                               INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -455,16 +604,24 @@ CREATE TABLE training_plan_history (
                                        month_start DATE,
                                        month_end DATE,
                                        group_id BIGINT,
-                                       created_by_tl BIGINT,
                                        verified_by_sv BIGINT,
                                        rejected_by BIGINT,
                                        reject_level ENUM('SUPERVISOR', 'MANAGER'),
                                        reject_reason TEXT,
                                        recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- BaseEntity fields (FULL - including updated fields)
+                                       delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                       created_by NVARCHAR(255),
+                                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                       updated_by NVARCHAR(255),
+
                                        FOREIGN KEY (training_plan_id) REFERENCES training_plan(id) ON DELETE CASCADE,
                                        FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE SET NULL,
                                        INDEX idx_plan (training_plan_id),
-                                       INDEX idx_version (version)
+                                       INDEX idx_version (version),
+                                       INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -480,8 +637,14 @@ CREATE TABLE training_plan_detail (
                                       actual_date DATE,
                                       note TEXT,
                                       result_status ENUM('PENDING', 'DONE', 'SICK_LEAVE', 'ANNUAL_LEAVE', 'NOT_APPLICABLE', 'MISSED') DEFAULT 'PENDING',
+
+    -- BaseEntity fields
+                                      delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                      created_by NVARCHAR(255),
                                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                      updated_by NVARCHAR(255),
+
                                       FOREIGN KEY (training_plan_id) REFERENCES training_plan(id) ON DELETE CASCADE,
                                       FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE RESTRICT,
                                       FOREIGN KEY (process_id) REFERENCES processes(id) ON DELETE RESTRICT,
@@ -490,7 +653,8 @@ CREATE TABLE training_plan_detail (
                                       INDEX idx_process (process_id),
                                       INDEX idx_target_month (target_month),
                                       INDEX idx_planned_date (planned_date),
-                                      INDEX idx_result_status (result_status)
+                                      INDEX idx_result_status (result_status),
+                                      INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -506,8 +670,17 @@ CREATE TABLE training_plan_detail_history (
                                               actual_date DATE,
                                               note TEXT,
                                               result_status ENUM('PENDING', 'DONE', 'SICK_LEAVE', 'ANNUAL_LEAVE', 'NOT_APPLICABLE', 'MISSED'),
+
+    -- BaseEntity fields
+                                              delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                              created_by NVARCHAR(255),
+                                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                              updated_by NVARCHAR(255),
+
                                               FOREIGN KEY (training_plan_history_id) REFERENCES training_plan_history(id) ON DELETE CASCADE,
-                                              INDEX idx_plan_history (training_plan_history_id)
+                                              INDEX idx_plan_history (training_plan_history_id),
+                                              INDEX idx_delete_flag (delete_flag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -518,8 +691,6 @@ CREATE TABLE training_result (
                                  title VARCHAR(200) NOT NULL,
                                  year INT NOT NULL,
                                  group_id BIGINT NOT NULL,
-                                 created_by_tl BIGINT NOT NULL,
-                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                  confirm_by_fi BIGINT,
                                  confirm_at_fi TIMESTAMP NULL,
                                  verified_by_sv BIGINT,
@@ -529,16 +700,20 @@ CREATE TABLE training_result (
                                  status ENUM('DRAFT', 'WAITING_FI', 'REJECTED_BY_FI', 'APPROVED_BY_FI', 'WAITING_SV', 'REJECTED_BY_SV', 'APPROVED_BY_SV', 'WAITING_MANAGER', 'REJECTED_BY_MANAGER', 'APPROVED_BY_MANAGER') DEFAULT 'DRAFT',
                                  current_version INT DEFAULT 1,
                                  last_reject_reason TEXT,
+
+                                 delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                 created_by NVARCHAR(255),
                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 updated_by NVARCHAR(255),
+
                                  FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE RESTRICT,
-                                 FOREIGN KEY (created_by_tl) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (confirm_by_fi) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (verified_by_sv) REFERENCES users(id) ON DELETE RESTRICT,
                                  FOREIGN KEY (approved_by_manager) REFERENCES users(id) ON DELETE RESTRICT,
                                  INDEX idx_status (status),
                                  INDEX idx_group (group_id),
-                                 INDEX idx_year (year),
-                                 INDEX idx_created_by (created_by_tl)
+                                 INDEX idx_year (year)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -551,12 +726,17 @@ CREATE TABLE training_result_history (
                                          version INT NOT NULL,
                                          year INT,
                                          group_id BIGINT,
-                                         created_by_tl BIGINT,
                                          verified_by_sv BIGINT,
                                          rejected_by BIGINT,
                                          reject_level ENUM('FINAL_INSPECTION', 'SUPERVISOR', 'MANAGER'),
                                          reject_reason TEXT,
-                                         recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                                         delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         created_by NVARCHAR(255),
+                                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                         updated_by NVARCHAR(255),
+
                                          FOREIGN KEY (training_result_id) REFERENCES training_result(id) ON DELETE CASCADE,
                                          FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE SET NULL,
                                          INDEX idx_result (training_result_id),
@@ -586,8 +766,13 @@ CREATE TABLE training_result_detail (
                                         status ENUM('DRAFT', 'WAITING_FI', 'REJECTED_BY_FI', 'APPROVED_BY_FI', 'WAITING_SV', 'REJECTED_BY_SV', 'APPROVED_BY_SV', 'WAITING_MANAGER', 'REJECTED_BY_MANAGER', 'APPROVED_BY_MANAGER') DEFAULT 'DRAFT',
                                         current_version INT DEFAULT 1,
                                         last_reject_reason TEXT,
+
+                                        delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                        created_by NVARCHAR(255),
                                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                        updated_by NVARCHAR(255),
+
                                         FOREIGN KEY (training_result_id) REFERENCES training_result(id) ON DELETE CASCADE,
                                         FOREIGN KEY (training_plan_detail_id) REFERENCES training_plan_detail(id) ON DELETE RESTRICT,
                                         FOREIGN KEY (product_group_id) REFERENCES product_group(id) ON DELETE RESTRICT,
@@ -625,7 +810,13 @@ CREATE TABLE training_result_detail_history (
                                                 remedial_action TEXT,
                                                 rejected_by BIGINT,
                                                 reject_reason TEXT,
+
+                                                delete_flag BOOLEAN NOT NULL DEFAULT FALSE,
                                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                created_by NVARCHAR(255),
+                                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                                updated_by NVARCHAR(255),
+
                                                 FOREIGN KEY (training_result_detail_id) REFERENCES training_result_detail(id) ON DELETE CASCADE,
                                                 FOREIGN KEY (training_result_history_id) REFERENCES training_result_history(id) ON DELETE CASCADE,
                                                 FOREIGN KEY (rejected_by) REFERENCES users(id) ON DELETE SET NULL,

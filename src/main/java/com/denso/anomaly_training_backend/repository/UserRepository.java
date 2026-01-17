@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.repository;
 
+import com.denso.anomaly_training_backend.enums.OAuthProvider;
 import com.denso.anomaly_training_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
@@ -7,5 +8,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
+
+    Optional<User> findByUsernameAndDeleteFlagFalse(String username);
+
+    Optional<User> findByEmailAndDeleteFlagFalse(String email);
+
+    Optional<User> findByOauthProviderAndOauthProviderIdAndDeleteFlagFalse(OAuthProvider oauthProvider, String oauthProviderId);
+
+    boolean existsByUsernameAndDeleteFlagFalse(String username);
+
+    boolean existsByEmailAndDeleteFlagFalse(String email);
 }
 

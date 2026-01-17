@@ -4,11 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "`groups`")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -22,16 +21,11 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "section_id")
     private Section section;
 
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "supervisor_id")
     private User supervisor;
-
-//    @Column(name = "created_at", updatable = false)
-//    private Instant createdAt;
-//
-//    @PrePersist
-//    protected void onCreate() { createdAt = Instant.now(); }
 }
 
