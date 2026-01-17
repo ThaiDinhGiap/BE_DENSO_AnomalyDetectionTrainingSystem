@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        . container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: white;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        . footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        .warning-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>⚠️ Cảnh báo: Lịch huấn luyện quá hạn</h1>
+    </div>
+
+    <div class="content">
+        <p>Kính gửi <strong th:text="${recipientName}">Team Leader</strong>,</p>
+
+        <p>Bạn có <strong th:text="${overdueCount}">0</strong> lịch kiểm tra huấn luyện <span class="warning-badge">QUÁ HẠN</span>
+            chưa được ghi nhận kết quả: </p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Mã NV</th>
+                <th>Họ tên</th>
+                <th>Công đoạn</th>
+                <th>Ngày dự kiến</th>
+                <th>Quá hạn</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${overdueItems}">
+                <td th:text="${item.employeeCode}">NV001</td>
+                <td th:text="${item. employeeName}">Nguyen Van A</td>
+                <td th:text="${item.processName}">Process A</td>
+                <td th:text="${#temporals.format(item.plannedDate, 'dd/MM/yyyy')}">01/01/2026</td>
+                <td><span class="warning-badge" th:text="${item. daysOverdue} + ' ngày'">3 ngày</span></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p><strong>Vui lòng: </strong></p>
+        <ul>
+            <li>Thực hiện kiểm tra và ghi nhận kết quả vào hệ thống, HOẶC</li>
+            <li>Cập nhật lý do nếu không thể thực hiện (nghỉ phép, nghỉ ốm, v.v.)</li>
+        </ul>
+
+        <p style="text-align: center;">
+            <a th:href="${dashboardLink}" class="button">Cập nhật ngay</a>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>Email này được gửi tự động từ hệ thống DENSO Anomaly Training.</p>
+        <p>Bạn sẽ tiếp tục nhận được nhắc nhở cho đến khi cập nhật kết quả.</p>
+        <p>&copy; 2026 DENSO Vietnam. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

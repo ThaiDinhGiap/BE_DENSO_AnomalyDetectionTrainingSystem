@@ -107,3 +107,11 @@ app:
     enabled: ${RABBITMQ_ENABLED:true}
   mail:
     enabled: ${MAIL_ENABLED:false}
+  scheduler:
+    # Training Reminders
+    training-reminder-today: "0 0 6 * * ?"
+    training-reminder-upcoming: "0 0 17 * * ?"
+    training-overdue-warning: "0 0 8 * * ?"
+    # Approval Overdue
+    approval-overdue: "0 0 8,14 * * ?"
+    approval-overdue-hours: 24

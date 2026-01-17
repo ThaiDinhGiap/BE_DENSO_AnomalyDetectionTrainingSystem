@@ -28,7 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +91,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Plans waiting for SV
         List<TrainingPlan> pendingPlans = trainingPlanRepository
-                .findByStatusAndUpdatedAtBefore(TrainingPlanStatus.WAITING_SV, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingPlanStatus.WAITING_SV.toString(), threshold);
 
         for (TrainingPlan plan : pendingPlans) {
             Long svId = plan.getGroup().getSupervisor().getId();
@@ -102,7 +101,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Results waiting for SV
         List<TrainingResult> pendingResults = trainingResultRepository
-                .findByStatusAndUpdatedAtBefore(TrainingResultStatus.WAITING_SV, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingResultStatus.WAITING_SV.toString(), threshold);
 
         for (TrainingResult result : pendingResults) {
             Long svId = result.getGroup().getSupervisor().getId();
@@ -112,7 +111,7 @@ public class ApprovalOverdueScheduler {
 
         // Issue Reports waiting for SV
         List<IssueReport> pendingIssues = issueReportRepository
-                .findByStatusAndUpdatedAtBefore(IssueReportStatus.WAITING_SV, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(IssueReportStatus.WAITING_SV.toString(), threshold);
 
         for (IssueReport issue : pendingIssues) {
             // Cần xác định SV từ issue - có thể thông qua created_by user's group
@@ -125,7 +124,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Topics waiting for SV
         List<TrainingTopic> pendingTopics = trainingTopicRepository
-                .findByStatusAndUpdatedAtBefore(TrainingTopicStatus.WAITING_SV, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingTopicStatus.WAITING_SV.toString(), threshold);
 
         for (TrainingTopic topic : pendingTopics) {
             Long svId = findSupervisorForTopic(topic);
@@ -159,7 +158,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Plans waiting for Manager
         List<TrainingPlan> pendingPlans = trainingPlanRepository
-                .findByStatusAndUpdatedAtBefore(TrainingPlanStatus.WAITING_MANAGER, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingPlanStatus.WAITING_MANAGER.toString(), threshold);
 
         for (TrainingPlan plan : pendingPlans) {
             Long managerId = plan.getGroup().getSection().getManager().getId();
@@ -169,7 +168,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Results waiting for Manager
         List<TrainingResult> pendingResults = trainingResultRepository
-                .findByStatusAndUpdatedAtBefore(TrainingResultStatus.WAITING_MANAGER, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingResultStatus.WAITING_MANAGER.toString(), threshold);
 
         for (TrainingResult result : pendingResults) {
             Long managerId = result.getGroup().getSection().getManager().getId();
@@ -179,7 +178,7 @@ public class ApprovalOverdueScheduler {
 
         // Issue Reports waiting for Manager
         List<IssueReport> pendingIssues = issueReportRepository
-                .findByStatusAndUpdatedAtBefore(IssueReportStatus.WAITING_MANAGER, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(IssueReportStatus.WAITING_MANAGER.toString(), threshold);
 
         for (IssueReport issue : pendingIssues) {
             Long managerId = findManagerForIssue(issue);
@@ -191,7 +190,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Topics waiting for Manager
         List<TrainingTopic> pendingTopics = trainingTopicRepository
-                .findByStatusAndUpdatedAtBefore(TrainingTopicStatus.WAITING_MANAGER, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingTopicStatus.WAITING_MANAGER.toString(), threshold);
 
         for (TrainingTopic topic : pendingTopics) {
             Long managerId = findManagerForTopic(topic);
@@ -225,7 +224,7 @@ public class ApprovalOverdueScheduler {
 
         // Training Result Details waiting for FI
         List<TrainingResultDetail> pendingDetails = trainingResultDetailRepository
-                .findByStatusAndUpdatedAtBefore(TrainingResultDetailStatus.WAITING_FI, Instant.from(threshold));
+                .findByStatusAndUpdatedAtBefore(TrainingResultDetailStatus.WAITING_FI.toString(), threshold);
 
         for (TrainingResultDetail detail : pendingDetails) {
             // FI user có thể được xác định từ group hoặc được assign

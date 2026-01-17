@@ -12,16 +12,30 @@ import java.util.List;
 @Repository
 public interface TrainingPlanDetailRepository extends JpaRepository<TrainingPlanDetail, Long> {
 
-    @Query("SELECT t FROM TrainingPlanDetail t " +
-            "WHERE t.plannedDate = :plannedDate " +
-            "AND t.resultStatus = 'PENDING' " +
-            "AND t.deleteFlag = false")
-    List<TrainingPlanDetail> findByPlannedDateAndResultStatusPending(@Param("plannedDate") LocalDate plannedDate);
+    /**
+     * Tìm training details theo ngày dự kiến và chưa thực hiện
+     */
+    @Query("SELECT tpd FROM TrainingPlanDetail tpd " +
+            "JOIN FETCH tpd.employee e " +
+            "JOIN FETCH tpd.process p " +
+            "JOIN FETCH tpd.trainingPlan tp " +
+            "WHERE tpd.plannedDate = :date " +
+            "AND tpd.resultStatus = 'PENDING' " +
+            "AND tp.status = 'APPROVED' " +
+            "AND tpd.deleteFlag = false")
+    List<TrainingPlanDetail> findByPlannedDateAndResultStatusPending(@Param("date") LocalDate date);
 
-    @Query("SELECT t FROM TrainingPlanDetail t " +
-            "WHERE t.plannedDate < :today " +
-            "AND t.resultStatus = 'PENDING' " +
-            "AND t.deleteFlag = false")
+    /**
+     * Tìm training details quá hạn (planned_date < today và chưa ghi nhận)
+     */
+    @Query("SELECT tpd FROM TrainingPlanDetail tpd " +
+            "JOIN FETCH tpd.employee e " +
+            "JOIN FETCH tpd.process p " +
+            "JOIN FETCH tpd.trainingPlan tp " +
+            "WHERE tpd. plannedDate < :today " +
+            "AND tpd. resultStatus = 'PENDING' " +
+            "AND tp. status = 'APPROVED' " +
+            "AND tpd.deleteFlag = false " +
+            "ORDER BY tpd.plannedDate ASC")
     List<TrainingPlanDetail> findOverdueTrainings(@Param("today") LocalDate today);
 }
-
