@@ -1,5 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.TrainingTopicStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,9 +23,6 @@ public class TrainingTopic extends BaseEntity {
     @Column(length = 200, nullable = false)
     private String title;
 
-    @Column(name = "created_by_tl", nullable = false)
-    private Long createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 
@@ -37,8 +35,9 @@ public class TrainingTopic extends BaseEntity {
     @Column(name = "approved_at_manager")
     private java.time.Instant approvedAtManager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status = "DRAFT";
+    private TrainingTopicStatus status = TrainingTopicStatus.DRAFT;
 
     @Column(name = "current_version")
     private Integer currentVersion = 1;

@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
-import com.denso.anomaly_training_backend.enums.PlanStatus;
+import com.denso.anomaly_training_backend.enums.TrainingPlanStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -34,10 +34,6 @@ public class TrainingPlan extends BaseEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl")
-    private User createdByTl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "verified_by_sv")
     private User verifiedBySv;
@@ -54,7 +50,7 @@ public class TrainingPlan extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private PlanStatus status = PlanStatus.DRAFT;
+    private TrainingPlanStatus status = TrainingPlanStatus.DRAFT;
 
     @Column(name = "current_version")
     private Integer currentVersion = 1;

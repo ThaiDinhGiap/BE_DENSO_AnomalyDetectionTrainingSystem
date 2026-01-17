@@ -1,5 +1,7 @@
 package com.denso.anomaly_training_backend.model;
 
+import com.denso.anomaly_training_backend.enums.IssueReportStatus;
+import com.denso.anomaly_training_backend.enums.RejectLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,10 +19,6 @@ public class IssueReport extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "created_by_tl", nullable = false)
-    private User createdByTl;
-
     @Column(name = "verified_by_sv")
     private Long verifiedBySv;
 
@@ -33,14 +31,16 @@ public class IssueReport extends BaseEntity {
     @Column(name = "approved_at_manager")
     private java.time.Instant approvedAtManager;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status = "DRAFT";
+    private IssueReportStatus status = IssueReportStatus.DRAFT;
 
     @Column(name = "rejected_by")
     private Long rejectedBy;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reject_level")
-    private String rejectLevel;
+    private RejectLevel rejectLevel;
 
     @Column(name = "reject_reason", columnDefinition = "text")
     private String rejectReason;

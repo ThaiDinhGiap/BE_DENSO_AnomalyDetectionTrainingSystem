@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
-import com.denso.anomaly_training_backend.enums.PlanDetailStatus;
+import com.denso.anomaly_training_backend.enums.TrainingPlanDetailResultStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -46,5 +46,5 @@ public class TrainingPlanDetail extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_status")
-    private PlanDetailStatus resultStatus = PlanDetailStatus.PENDING;
+    private TrainingPlanDetailResultStatus resultStatus = TrainingPlanDetailResultStatus.PENDING;
 }
