@@ -9,5 +9,11 @@ public interface ProcessRepository extends JpaRepository<Process, Long> {
     boolean existsByCode(String code);
 
     List<Process> findByGroupId(Long groupId);
+
+    /**
+     * Nếu Công đoạn gắn chặt với từng Group (Mỗi dây chuyền có quy trình riêng)
+     */
+    List<Process> findByGroup_IdAndDeleteFlagFalse(Long groupId);
+
 }
 

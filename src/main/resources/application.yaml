@@ -115,3 +115,21 @@ app:
     # Approval Overdue
     approval-overdue: "0 0 8,14 * * ?"
     approval-overdue-hours: 24
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+    display-request-duration: true
+    filter: true
+    show-extensions: true
+    show-common-extensions: true
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

@@ -4,15 +4,16 @@
 
 -- TRAINING PLAN
 INSERT INTO notification_templates (code, subject_template, body_template, description, delete_flag, created_at)
-VALUES ('PLAN_WAITING_SV', '[DENSO Training] Kế hoạch huấn luyện cần phê duyệt:  ${planTitle}',
+VALUES ('PLAN_WAITING_SV', '[DENSO Training] Kế hoạch huấn luyện cần phê duyệt:  $${planTitle}',
         'email/plan-waiting-approval', 'TL gửi kế hoạch, thông báo SV phê duyệt', false, NOW()),
-       ('PLAN_WAITING_MANAGER', '[DENSO Training] Kế hoạch huấn luyện cần phê duyệt: ${planTitle}',
+       ('PLAN_WAITING_MANAGER', '[DENSO Training] Kế hoạch huấn luyện cần phê duyệt: $${planTitle}',
         'email/plan-waiting-approval', 'SV duyệt, thông báo Manager phê duyệt', false, NOW()),
-       ('PLAN_APPROVED', '[DENSO Training] Kế hoạch huấn luyện đã được phê duyệt:  ${planTitle}', 'email/plan-approved',
+       ('PLAN_APPROVED', '[DENSO Training] Kế hoạch huấn luyện đã được phê duyệt:  $${planTitle}',
+        'email/plan-approved',
         'Kế hoạch đã được duyệt hoàn tất', false, NOW()),
-       ('PLAN_REJECTED_BY_SV', '[DENSO Training] Kế hoạch huấn luyện bị từ chối: ${planTitle}', 'email/plan-rejected',
+       ('PLAN_REJECTED_BY_SV', '[DENSO Training] Kế hoạch huấn luyện bị từ chối: $${planTitle}', 'email/plan-rejected',
         'SV từ chối kế hoạch', false, NOW()),
-       ('PLAN_REJECTED_BY_MANAGER', '[DENSO Training] Kế hoạch huấn luyện bị từ chối: ${planTitle}',
+       ('PLAN_REJECTED_BY_MANAGER', '[DENSO Training] Kế hoạch huấn luyện bị từ chối: $${planTitle}',
         'email/plan-rejected', 'Manager từ chối kế hoạch', false, NOW()),
 
 -- TRAINING RESULT
@@ -44,15 +45,15 @@ VALUES ('PLAN_WAITING_SV', '[DENSO Training] Kế hoạch huấn luyện cần p
         'Manager từ chối báo cáo', false, NOW()),
 
 -- TRAINING TOPIC
-       ('TOPIC_WAITING_SV', '[DENSO Training] Nội dung huấn luyện cần phê duyệt:  ${topicTitle}',
+       ('TOPIC_WAITING_SV', '[DENSO Training] Nội dung huấn luyện cần phê duyệt:  $${topicTitle}',
         'email/topic-waiting-approval', 'TL gửi topic, thông báo SV phê duyệt', false, NOW()),
-       ('TOPIC_WAITING_MANAGER', '[DENSO Training] Nội dung huấn luyện cần phê duyệt: ${topicTitle}',
+       ('TOPIC_WAITING_MANAGER', '[DENSO Training] Nội dung huấn luyện cần phê duyệt: $${topicTitle}',
         'email/topic-waiting-approval', 'SV duyệt, thông báo Manager phê duyệt', false, NOW()),
-       ('TOPIC_APPROVED', '[DENSO Training] Nội dung huấn luyện đã được phê duyệt: ${topicTitle}',
+       ('TOPIC_APPROVED', '[DENSO Training] Nội dung huấn luyện đã được phê duyệt: $${topicTitle}',
         'email/topic-approved', 'Topic đã được duyệt hoàn tất', false, NOW()),
-       ('TOPIC_REJECTED_BY_SV', '[DENSO Training] Nội dung huấn luyện bị từ chối:  ${topicTitle}',
+       ('TOPIC_REJECTED_BY_SV', '[DENSO Training] Nội dung huấn luyện bị từ chối:  $${topicTitle}',
         'email/topic-rejected', 'SV từ chối topic', false, NOW()),
-       ('TOPIC_REJECTED_BY_MANAGER', '[DENSO Training] Nội dung huấn luyện bị từ chối: ${topicTitle}',
+       ('TOPIC_REJECTED_BY_MANAGER', '[DENSO Training] Nội dung huấn luyện bị từ chối: $${topicTitle}',
         'email/topic-rejected', 'Manager từ chối topic', false, NOW()),
 
 -- REMINDERS
@@ -64,11 +65,11 @@ VALUES ('PLAN_WAITING_SV', '[DENSO Training] Kế hoạch huấn luyện cần p
         'email/training-overdue-warning', 'Cảnh báo TL lịch kiểm tra quá hạn', false, NOW()),
 
 -- APPROVAL OVERDUE (Nagging)
-       ('APPROVAL_OVERDUE_SV', '[DENSO Training] Nhắc nhở: Có ${pendingCount} phê duyệt đang chờ xử lý',
+       ('APPROVAL_OVERDUE_SV', '[DENSO Training] Nhắc nhở: Có $${pendingCount} phê duyệt đang chờ xử lý',
         'email/approval-overdue', 'Nhắc SV xử lý phê duyệt tồn đọng', false, NOW()),
-       ('APPROVAL_OVERDUE_MANAGER', '[DENSO Training] Nhắc nhở: Có ${pendingCount} phê duyệt đang chờ xử lý',
+       ('APPROVAL_OVERDUE_MANAGER', '[DENSO Training] Nhắc nhở: Có $${pendingCount} phê duyệt đang chờ xử lý',
         'email/approval-overdue', 'Nhắc Manager xử lý phê duyệt tồn đọng', false, NOW()),
-       ('APPROVAL_OVERDUE_FI', '[DENSO Training] Nhắc nhở:  Có ${pendingCount} kết quả cần xác nhận',
+       ('APPROVAL_OVERDUE_FI', '[DENSO Training] Nhắc nhở:  Có $${pendingCount} kết quả cần xác nhận',
         'email/approval-overdue-fi', 'Nhắc TL(FI) xác nhận kết quả tồn đọng', false, NOW());
 
 

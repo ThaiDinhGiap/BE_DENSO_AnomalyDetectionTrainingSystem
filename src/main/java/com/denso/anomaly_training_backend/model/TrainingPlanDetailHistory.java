@@ -1,6 +1,6 @@
 package com.denso.anomaly_training_backend.model;
 
-import com.denso.anomaly_training_backend.enums.TrainingPlanDetailResultStatus;
+import com.denso.anomaly_training_backend.enums.TrainingPlanDetailStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,17 +42,23 @@ public class TrainingPlanDetailHistory extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private TrainingPlanHistory trainingPlanHistory;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Employee employee;
+    @Column(name = "employee_id")
+    private Long employeeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Process process;
+    @Column(name = "employee_code")
+    private String employeeCode;
+
+    @Column(name = "employee_full_name")
+    private String employeeFullName;
+
+    @Column(name = "process_id")
+    private Long processId;
+
+    @Column(name = "process_code")
+    private String processCode;
+
+    @Column(name = "process_name")
+    private String processName;
 
     @Column(name = "target_month")
     private LocalDate targetMonth;
@@ -68,5 +74,5 @@ public class TrainingPlanDetailHistory extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "result_status")
-    private TrainingPlanDetailResultStatus resultStatus;
+    private TrainingPlanDetailStatus resultStatus;
 }
